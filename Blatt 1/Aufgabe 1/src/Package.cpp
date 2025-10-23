@@ -8,14 +8,6 @@ Package::Package(int id, int duration, const std::vector<int>& dependencies)
     }
 }
 
-Package::Package(int id, int duration, const std::vector<int>& dependencies, int latest_finish)
-    : id(id), duration(duration), dependencies(dependencies) {
-    set_latest_finish(latest_finish);
-    if (this->dependencies.empty()) {
-        handle_start_package();
-    }
-}
-
 void Package::handle_start_package() {
     set_earliest_start(0);
 }

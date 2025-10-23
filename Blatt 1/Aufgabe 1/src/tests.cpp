@@ -17,9 +17,9 @@ TEST(CriticalPath, PackageFromAssignment) {
     Package a11{ 11, 3, { a07.get_id() } };
     Package a12{ 12, 2, { a05.get_id(), a08.get_id() } };
     Package a13{ 13, 4, { a10.get_id(), a11.get_id() } };
-    Package a14{ 14, 7, { a09.get_id(), a12.get_id() }, 21 };
+    Package a14{ 14, 7, { a09.get_id(), a12.get_id() } };
     Package a15{ 15, 2, { a09.get_id(), a12.get_id() } };
-    Package a16{ 16, 4, { a13.get_id(), a15.get_id() }, 21 };
+    Package a16{ 16, 4, { a13.get_id(), a15.get_id() } };
 
     std::unordered_map<int, Package*> package_map = {
         { a01.get_id(), &a01 }, { a02.get_id(), &a02 }, { a03.get_id(), &a03 }, { a04.get_id(), &a04 },
@@ -152,9 +152,9 @@ TEST(Completions, PackageNetFromLecture) {
     Package e{ 5, 17, {a.get_id()} };
     Package f{ 6, 13, {b.get_id()} };
     Package g{ 7, 9, {c.get_id()} };
-    Package h{ 8, 9, {d.get_id()}, 33 };
-    Package i{ 9, 6, {e.get_id()}, 33 };
-    Package j{ 10, 12, {f.get_id(), g.get_id()}, 33 };
+    Package h{ 8, 9, {d.get_id()} };
+    Package i{ 9, 6, {e.get_id()} };
+    Package j{ 10, 12, {f.get_id(), g.get_id()} };
 
     std::unordered_map<int, Package*> package_map_from_lecture = {
         { a.get_id(), &a }, { b.get_id(), &b }, { c.get_id(), &c }, { d.get_id(), &d },
