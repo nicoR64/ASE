@@ -144,7 +144,7 @@ TEST(CriticalPath, PackageFromAssignment) {
     EXPECT_EQ(1, a16.get_slack());
 }
 
-TEST(Completions, PackageNetFromLecture) {
+TEST(CriticalPath, PackageNetFromLecture) {
     Package a{ 1, 6, {} };
     Package b{ 2, 8, {} };
     Package c{ 3, 5, {} };
@@ -164,6 +164,7 @@ TEST(Completions, PackageNetFromLecture) {
 
     CriticalPathFinder completer{ package_map_from_lecture };
     completer.complete();
+    
     // A
     EXPECT_EQ(0, a.get_earliest_start());
     EXPECT_EQ(6, a.get_earliest_finish());
