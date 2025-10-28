@@ -114,3 +114,4 @@ nb-configuration.xml
 *.fdb_latexmk
 *.fls
 *.gz
+*.Identifier

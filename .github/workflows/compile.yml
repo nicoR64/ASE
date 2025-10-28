@@ -1,0 +1,225 @@
+name: Build PDFs, ZIPs and Deploy to Branch
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+  workflow_dispatch:
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ github.event_name == 'workflow_dispatch'
+        && steps.full.outputs.matrix
+        || steps.changed.outputs.matrix }}
+      should_run: ${{ (github.event_name == 'workflow_dispatch'
+        && steps.full.outputs.matrix
+        || steps.changed.outputs.matrix) != '[]' }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get changed sheets and build matrix
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        id: changed
+        run: |
+          set -euo pipefail
+
+          git fetch origin main
+
+          CHANGED_DIRS=$(
+            git diff --name-only "origin/main"...HEAD \
+            | awk -F/ '/^Blatt[0-9]+\/.*/ {print $1}' \
+            | sort -uV
+          )
+
+          echo "changed sheets:"
+          printf '%s\n' "$CHANGED_DIRS" || true
+
+          if [ -z "$CHANGED_DIRS" ]; then
+            MATRIX_JSON="[]"
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            MATRIX_JSON=$(python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().strip().split("\n")))' <<< "$CHANGED_DIRS")
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "Matrix as JSON:"
+          echo "$MATRIX_JSON"
+
+          echo "matrix=$MATRIX_JSON" >> "$GITHUB_OUTPUT"
+
+      - name: Get all sheets and build matrix
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        id: full
+        run: |
+          set -euo pipefail
+          
+          SHEET_DIRS=$(find . \
+            -maxdepth 1 -mindepth 1 -type d \
+            -regex '\./Blatt[0-9]+' \
+            -printf '%f\n' \
+            | sort -V)
+  
+          echo "All Sheets:"
+          printf '%s\n' "$SHEET_DIRS"
+          
+          MATRIX_JSON=$(python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().strip().split("\n")))' <<< "$SHEET_DIRS")
+          
+          echo "Matrix as JSON:"
+          echo "$MATRIX_JSON"
+  
+          echo "matrix=$MATRIX_JSON" >> "$GITHUB_OUTPUT"
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: discover
+    runs-on: ubuntu-latest
+    if: ${{ needs.discover.outputs.should_run == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        sheet: ${{ fromJson(needs.discover.outputs.matrix) }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: prepare wrapper.tex for ${{ matrix.sheet }}
+        run: |
+          set -euo pipefail
+          
+          SHEET_DIR="${{ matrix.sheet }}"
+          
+          SHEET_NUM=$(echo "$SHEET_DIR" | sed -E 's/Blatt+([0-9]+)/\1/')
+          
+          AUTHORS_RAW=$(cat authors.txt)
+          
+          AUTHORS_TEX=$(printf "%s" "$AUTHORS_RAW" | sed ':a;N;$!ba; s/\\/\\\\/g; s/"/\\"/g; s/\r//g; s/\n/\\\\/g')
+          
+          cat > "${SHEET_DIR}/wrapper.tex" <<EOF
+          \def\BlattNr{$SHEET_NUM}
+          \def\AuthorsNames{$AUTHORS_TEX}
+          \input{Abgabe.tex}
+          EOF
+          
+          {
+            echo "SHEET_DIR=$SHEET_DIR"
+            echo "SHEET_NUM=$SHEET_NUM"
+            
+            echo "AUTHORS_RAW<<EOF"
+            printf '%s\n' "$AUTHORS_RAW"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+        
+          echo "Preparation for ${SHEET_DIR} finished"
+          echo "wrapper.tex content:"
+          cat "${SHEET_DIR}/wrapper.tex"
+
+      - name: compile LaTeX for ${{ matrix.sheet }}
+        uses: xu-cheng/texlive-action@v3
+        with:
+          scheme: small
+          run: |
+            tlmgr install algorithm2e pgf ifoddpage tools relsize enumitem
+            latexmk -cd -pdf -file-line-error -halt-on-error -interaction=nonstopmode ${{ env.SHEET_DIR }}/wrapper.tex
+            latexmk -cd -c ${{ env.SHEET_DIR }}/wrapper.tex
+
+      - name: rename PDF
+        run: |
+          set -euo pipefail
+          mv "${{ env.SHEET_DIR }}/wrapper.pdf" "${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-GRUPPE07.pdf"
+
+      - name: Upload PDF as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Blatt${{ env.SHEET_NUM }}
+          path: '${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-GRUPPE07.pdf'
+
+      - name: Inject header comments
+        run: |
+          TARGET_DIR="${{ env.SHEET_DIR }}/code"
+          
+          shopt -s globstar nullglob
+          
+          for f in "$TARGET_DIR"/**/*.{cpp,h,java,py,rs}; do
+            [ -f "$f" ] || continue
+          
+            ext="${f##*.}"
+          
+            case "$ext" in
+              py)
+                prefix="#"
+                ;;
+              *)
+                prefix="//"
+                ;;
+            esac
+          
+              header_block="$(
+                printf '%s\n' "$AUTHORS_RAW" | sed "s|^|${prefix} |"
+              )"
+          
+            tmpfile="$(mktemp)"
+            {
+              printf '%s\n\n' "$header_block"
+              cat "$f"
+            } > "$tmpfile"
+          
+            mv "$tmpfile" "$f"
+          done
+
+      - name: create ZIP of code for ${{ matrix.sheet }}
+        run: |
+            set -euo pipefail
+            ZIP_NAME="SE${{ env.SHEET_NUM }}-GRUPPE07.zip"
+            cd "${{ env.SHEET_DIR }}/code"
+            zip -r "../$ZIP_NAME" . -x "*.git*" "*__MACOSX*" "*.DS_Store*"
+            cd ..
+            echo "ZIP $ZIP_NAME created."
+
+      - name: Upload ZIP as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Blatt${{ env.SHEET_NUM }}-code
+          path: '${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-GRUPPE07.zip'
+
+
+  package:
+    needs:
+        - build
+        - discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sheet: ${{ fromJson(needs.discover.outputs.matrix) }}
+    env:
+      SHEET_DIR: ${{ matrix.sheet }}
+
+    steps:
+      - name: Download PDF Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SHEET_DIR }}
+          path: publish
+
+      - name: Download Code ZIP Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.SHEET_DIR }}-code
+          path: publish
+
+      - name: Deploy to Branch ${{ env.SHEET_DIR }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish
+          enable_jekyll: false
+          force_orphan: true
+          publish_branch: ${{ env.SHEET_DIR }}
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
