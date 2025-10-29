@@ -41,7 +41,7 @@ jobs:
           )
     
 
-    echo "changed sheets:"
+          echo "changed sheets:"
           printf '%s\n' "$CHANGED_DIRS" || true
 
           if [ -z "$CHANGED_DIRS" ]; then
