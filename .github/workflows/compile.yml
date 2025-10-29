@@ -30,16 +30,18 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo $(git diff --name-only origin/main...HEAD)
-
+          BASE_SHA="${{ github.event.before }}"
+          HEAD_SHA="${{ github.sha }}"
+          
           CHANGED_DIRS=$(
-            git diff --name-only origin/main...HEAD \
+            git diff --name-only "${BASE_SHA}...${HEAD_SHA}" \
             | sed -E 's#^\./##' \
             | awk -F/ '$1 ~ /^Blatt[0-9]+$/ {print $1}' \
             | sort -u
           )
+    
 
-          echo "changed sheets:"
+    echo "changed sheets:"
           printf '%s\n' "$CHANGED_DIRS" || true
 
           if [ -z "$CHANGED_DIRS" ]; then
