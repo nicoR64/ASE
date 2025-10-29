@@ -30,10 +30,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          git fetch origin main
-
           CHANGED_DIRS=$(
-            git diff --name-only origin/main...FETCH_HEAD \
+            git diff --name-only origin/main...HEAD \
             | sed -E 's#^\./##' \
             | awk -F/ '$1 ~ /^Blatt[0-9]+$/ {print $1}' \
             | sort -u
