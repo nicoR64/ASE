@@ -114,18 +114,15 @@ public class Frame {
         if (isLastFrame) {
             return 0;
         }
-        if (isStrike()) {
-            if (getNextFrame().isPresent()) {
-                Frame next = getNextFrame().get();
-                if (next.isStrike()) {
-                    if (next.isLastFrame()) {
-                        return next.getScore(0) + next.getScore(1);
-                    }
-                    return next.getBaseScore() + next.getNextFrame().map(frame -> frame.getScore(0)).orElse(0);
-                } else {
-                    return next.getBaseScore();
+        if (isStrike() && getNextFrame().isPresent()) {
+            Frame next = getNextFrame().get();
+            if (next.isStrike()) {
+                if (next.isLastFrame()) {
+                    return next.getScore(0) + next.getScore(1);
                 }
+                return next.getBaseScore() + next.getNextFrame().map(frame -> frame.getScore(0)).orElse(0);
             }
+            return next.getBaseScore();
         } else if (isSpare()) {
             return getNextFrame().map(frame -> frame.getScore(0)).orElse(0);
         }
