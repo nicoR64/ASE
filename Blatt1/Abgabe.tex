@@ -26,8 +26,14 @@
 % Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
 
 % Aufgabe 1
-    \exercise{Lorem ipsum}
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    \exercise{Kritischer Pfad}
+    \begin{enumerate}
+        \item[(c)]{Der verwendete Algorithmus besteht im westentlichen zwei Phasen. In der ersten Phase, der Forward-Propagation, werden
+        zunächst die Startknoten identifiziert. Dies sind alle Knoten ohne Abhängigkeiten. Für diese wird dann EF als ES+duration berechnet. Diese neue Informationen werden an alle Knoten mit direkten Abhängigkeiten weitergegeben. Dies wiederholt sich rekursiv, bis alle Knoten den Zeitpunkt EF erhalten haben. In der darauf folgenden zweiten Phase wird die Gesamtdauer des Projekt als Maximum aller EF berechnet und als LF aller Knoten ohne Nachfolger (Blattknoten) gesetzt. Daraus ergibt sich für alle Blattknoten der LS als LF-duration. Diese Informationen werden dann an die Eltern (alle Knoten von denen der aktuelle Knoten abhängt) rekursiv weitergegeben, bis schlussendlich alle Knoten ES,EF,LS,LF ermittelt haben. Zum Schluss wird für jeden Knoten der Slack als LS-ES = LF-EF berechnet. 
+        \\
+        Um eine bessere Softwarequalität zu erreichen, wurde entscheiden eine Versionskontrolle (git) zu verwenden. Die ist hilfreich, wenn mehrere Entwickler am selben Projekt arbeiten möchten, da alle Änderungen getrackt werden und notfalls auch rückgänging gemacht werden können. Desweiteren wird GitHubActions als CI verwendet, um u.a. den Main-Branch sauber zu halten. Dadurch sollte gewährleistet sein, dass immer eine ausführbare Version der Software verfügbar ist.
+        }
+    \end{enumerate}
 
 
 \end{document}
