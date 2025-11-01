@@ -43,22 +43,17 @@ public class Frame {
             rolls.add(new Roll(pins));
             return;
         }
-        if (isLastFrame) {
-            if (isStrike()) {
-                if (bonusRollsLastFrame.size() <= BONUS_ROLLS_LAST_FRAME) {
-                    bonusRollsLastFrame.add(new Roll(pins));
-                } else {
-                    throw new IllegalStateException("No more rolls allowed in this frame");
-                }
-            } else if (isSpare()) {
-                if (bonusRollsLastFrame.size() < BONUS_ROLLS_LAST_FRAME) {
-                    bonusRollsLastFrame.add(new Roll(pins));
-                } else {
-                    throw new IllegalStateException("No more rolls allowed in this frame");
-                }
-            } else {
-                throw new IllegalStateException("No more rolls allowed in this frame");
-            }
+
+        if (!isLastFrame) {
+            return;
+        }
+
+        if (isStrike() && bonusRollsLastFrame.size() <= BONUS_ROLLS_LAST_FRAME) {
+            bonusRollsLastFrame.add(new Roll(pins));
+        } else if (isSpare() && bonusRollsLastFrame.size() < BONUS_ROLLS_LAST_FRAME) {
+            bonusRollsLastFrame.add(new Roll(pins));
+        } else {
+            throw new IllegalStateException("No more rolls allowed in this frame");
         }
     }
 

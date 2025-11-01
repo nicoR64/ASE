@@ -136,13 +136,13 @@ jobs:
       - name: rename PDF
         run: |
           set -euo pipefail
-          mv "${{ env.SHEET_DIR }}/wrapper.pdf" "${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-GRUPPE07.pdf"
+          mv "${{ env.SHEET_DIR }}/wrapper.pdf" "${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-Gruppe07.pdf"
 
       - name: Upload PDF as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Blatt${{ env.SHEET_NUM }}
-          path: '${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-GRUPPE07.pdf'
+          path: '${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-Gruppe07.pdf'
 
       - name: Inject header comments
         run: |
@@ -180,7 +180,7 @@ jobs:
       - name: create ZIP of code for ${{ matrix.sheet }}
         run: |
             set -euo pipefail
-            ZIP_NAME="SE${{ env.SHEET_NUM }}-GRUPPE07.zip"
+            ZIP_NAME="SE${{ env.SHEET_NUM }}-Gruppe07.zip"
             cd "${{ env.SHEET_DIR }}/code"
             zip -r "../$ZIP_NAME" . -x "*.git*" "*__MACOSX*" "*.DS_Store*"
             cd ..
@@ -190,7 +190,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Blatt${{ env.SHEET_NUM }}-code
-          path: '${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-GRUPPE07.zip'
+          path: '${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-Gruppe07.zip'
 
 
   package:
