@@ -43,6 +43,8 @@
         Um eine bessere Softwarequalität zu erreichen, wurde entscheiden eine Versionskontrolle (git) zu verwenden. Die ist hilfreich, wenn mehrere Entwickler am selben Projekt arbeiten möchten, da alle Änderungen getrackt werden und notfalls auch rückgänging gemacht werden können. Desweiteren wird GitHubActions als CI verwendet, um u.a. den Main-Branch sauber zu halten. Dadurch sollte gewährleistet sein, dass immer eine ausführbare Version der Software verfügbar ist.
         }
     \end{enumerate}
-
+\exercise{Bowling Game Kata}
+Die Berechnung des Scores erfolgt indem man die Summe aller Frames bildet. Der Score eines Frames besteht dabei aus einem Base-Score, welcher lediglich die umgeworfenen Pins pro Frame angibt. Der Bonus-Score bildet die Extra-Punkt ab, die man durch das erzielen eines Strikes oder Spares erhält. Der Score eines Frames ist somit die Summe aus Base-Score und Bonus-Score.\\
+Für einen einzelnen Roll wurde die Datenstruktur eines record gewählt, da ein Roll unveränderlich sein soll. (Man soll im Nachhinein nicht seine geworfenen Punkte manipulieren können). Um eine gute Wartbarkeit zu gewährleisten, wurde versucht konsuquent Konstanten einzuführen, anstatt Werte zu hardcoden. Dies hat den Effekt einer guten Wartbarkeit. Sollten zum Beispiel drei Rolls pro Frame erlaubt sein, so muss man nur eine  einzige Stelle im Code ändern, um die Regeländerung zu implementieren.
 
 \end{document}
