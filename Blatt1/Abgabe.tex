@@ -27,7 +27,16 @@
 
 % Aufgabe 1
     \exercise{Kritischer Pfad}
+
     \begin{enumerate}
+        \item[(a)]{
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./Tex-Graphics/Aufgabe1a.jpeg}
+    \caption{Instanz der CPM}
+\end{figure}
+        }
         \item[(c)]{Der verwendete Algorithmus besteht im westentlichen zwei Phasen. In der ersten Phase, der Forward-Propagation, werden
         zunächst die Startknoten identifiziert. Dies sind alle Knoten ohne Abhängigkeiten. Für diese wird dann EF als ES+duration berechnet. Diese neue Informationen werden an alle Knoten mit direkten Abhängigkeiten weitergegeben. Dies wiederholt sich rekursiv, bis alle Knoten den Zeitpunkt EF erhalten haben. In der darauf folgenden zweiten Phase wird die Gesamtdauer des Projekt als Maximum aller EF berechnet und als LF aller Knoten ohne Nachfolger (Blattknoten) gesetzt. Daraus ergibt sich für alle Blattknoten der LS als LF-duration. Diese Informationen werden dann an die Eltern (alle Knoten von denen der aktuelle Knoten abhängt) rekursiv weitergegeben, bis schlussendlich alle Knoten ES,EF,LS,LF ermittelt haben. Zum Schluss wird für jeden Knoten der Slack als LS-ES = LF-EF berechnet. 
         \\
