@@ -3,6 +3,18 @@
 #include <unordered_map>
 
 class Package;
+/**
+Maximilian Peresunchak (st152466@stud.uni-stuttgart.de)
+Nico Reng (st188620@stud.uni-stuttgart.de)
+Viorel Tsigos (st188085@stud.uni-stuttgart.de)
+Philip Reimann (st182312@stud.uni-stuttgart.de)
+Christian Keller (st166512@stud.uni-stuttgart.de)
+Florian Frank  (st@stud.uni-stuttgart.de)
+Johannes Heugel (st@stud.uni-stuttgart.de)
+Maysaa Abualqumboz (st@stud.uni-stuttgart.de)
+Benedikt Wachmer (st177118@stud.uni-stuttgart.de)
+Miles Holl (st@stud.uni-stuttgart.de)
+*/
 
 /**
  * @class CriticalPathFinder
