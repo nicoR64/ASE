@@ -1,6 +1,6 @@
-# Game of Life Kata - README
+# Critical Path - README
 
-This project implements the exercise 3 of exercise sheet 1 in C++ and includes unit tests using **GoogleTest**.
+This project implements the exercise 1 of exercise sheet 1 in C++ and includes unit tests using **GoogleTest**.
 
 ## Prerequisites
 - C++ 17 compatible compiler
