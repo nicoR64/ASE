@@ -13,3 +13,5 @@ This project implements the exercise 2 of exercise sheet 1 in java and includes 
 ```bash
 mvn test
 ```
+
+or use the maven scripts in this directory.
