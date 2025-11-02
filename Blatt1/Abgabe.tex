@@ -19,30 +19,26 @@
 
 \begin{document}
 
-    \input{../assets/Titelseite.tex} % Titelseite einbinden
+\input{../assets/Titelseite.tex} % Titelseite einbinden
 
 % Nutze den \exercise{Aufgabenname} Befehl, um eine neue Aufgabe zu beginnen.
 % Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
 % Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
 
 % Aufgabe 1
-    \exercise{Kritischer Pfad}
+\exercise{Kritischer Pfad}
 
-    \begin{enumerate}
-        \item[(a)]{
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./Tex-Graphics/Aufgabe1a.jpeg}
-    \caption{Instanz der CPM}
-\end{figure}
-        }
-        \item[(c)]{Der verwendete Algorithmus besteht im westentlichen zwei Phasen. In der ersten Phase, der Forward-Propagation, werden
-        zunächst die Startknoten identifiziert. Dies sind alle Knoten ohne Abhängigkeiten. Für diese wird dann EF als ES+duration berechnet. Diese neue Informationen werden an alle Knoten mit direkten Abhängigkeiten weitergegeben. Dies wiederholt sich rekursiv, bis alle Knoten den Zeitpunkt EF erhalten haben. In der darauf folgenden zweiten Phase wird die Gesamtdauer des Projekt als Maximum aller EF berechnet und als LF aller Knoten ohne Nachfolger (Blattknoten) gesetzt. Daraus ergibt sich für alle Blattknoten der LS als LF-duration. Diese Informationen werden dann an die Eltern (alle Knoten von denen der aktuelle Knoten abhängt) rekursiv weitergegeben, bis schlussendlich alle Knoten ES,EF,LS,LF ermittelt haben. Zum Schluss wird für jeden Knoten der Slack als LS-ES = LF-EF berechnet. 
+\begin{enumerate}
+  \item[a)] ~
+        \begin{figure}[h]
+          \centering
+          \includegraphics[width=1.0\textwidth]{./Tex-Graphics/Aufgabe1a.png}
+          \caption{Instanz der CPM}
+        \end{figure}
+  \item[c)] Der verwendete Algorithmus besteht im westentlichen aus zwei Phasen. In der ersten Phase, der Forward-Propagation, werden zunächst die Startknoten identifiziert. Dies sind alle Knoten ohne Abhängigkeiten. Für diese wird dann $EF$ als $ES+duration$ berechnet. Diese neue Informationen werden an alle Knoten mit direkten Abhängigkeiten weitergegeben. Dies wiederholt sich rekursiv, bis alle Knoten den Zeitpunkt $EF$ erhalten haben. In der darauf folgenden zweiten Phase wird die Gesamtdauer des Projekt als Maximum aller $EF$ berechnet und als $LF$ aller Knoten ohne Nachfolger (Blattknoten) gesetzt. Daraus ergibt sich für alle Blattknoten der $LS$ als $LF-duration$. Diese Informationen werden dann an die Eltern (alle Knoten von denen der aktuelle Knoten abhängt) rekursiv weitergegeben, bis schlussendlich alle Knoten $ES,EF,LS,LF$ ermittelt haben. Zum Schluss wird für jeden Knoten der Slack als $LS-ES = LF-EF$ berechnet.
         \\
-        Um eine bessere Softwarequalität zu erreichen, wurde entscheiden eine Versionskontrolle (git) zu verwenden. Die ist hilfreich, wenn mehrere Entwickler am selben Projekt arbeiten möchten, da alle Änderungen getrackt werden und notfalls auch rückgänging gemacht werden können. Desweiteren wird GitHubActions als CI verwendet, um u.a. den Main-Branch sauber zu halten. Dadurch sollte gewährleistet sein, dass immer eine ausführbare Version der Software verfügbar ist.
-        }
-    \end{enumerate}
+        Um die Arbeitspakete und ihre Abhängigkeiten zu modellieren, haben wir uns für ein objektorientiertes Design entschieden. Dies hat für die Softwarequalität den Vorteil, dass die Kapselung von Daten und Methoden in einer Klasse eine hohe Kohäsion und geringe Kopplung fördert. Jede Instanz der Klasse \texttt{Package} modelliert dabei ein Arbeitspaket mit seinen Eigenschaften (Dauer, ES, EF, LS, LF, Slack) und Methoden zur Berechnung dieser Eigenschaften. Die Abhängigkeiten zwischen den Arbeitspaketen werden durch Referenzen auf IDs anderer \texttt{Package}-Objekte modelliert. Die gesamte Menge der Arbeitspakete wird in einer \texttt{CriticalPathFinder}-Klasse verwaltet, die die Logik für die Durchführung der Forward- und Backward-Propagation implementiert. Diese Struktur ermöglicht eine klare Trennung der Verantwortlichkeiten und erleichtert die Wartung und Erweiterung des Codes.
+\end{enumerate}
 \exercise{Bowling Game Kata}
 Die Berechnung des Scores erfolgt indem man die Summe aller Frames bildet. Der Score eines Frames besteht dabei aus einem Base-Score, welcher lediglich die umgeworfenen Pins pro Frame angibt. Der Bonus-Score bildet die Extra-Punkt ab, die man durch das erzielen eines Strikes oder Spares erhält. Der Score eines Frames ist somit die Summe aus Base-Score und Bonus-Score.\\
 Für einen einzelnen Roll wurde die Datenstruktur eines record gewählt, da ein Roll unveränderlich sein soll. (Man soll im Nachhinein nicht seine geworfenen Punkte manipulieren können). Um eine gute Wartbarkeit zu gewährleisten, wurde versucht konsuquent Konstanten einzuführen, anstatt Werte zu hardcoden. Dies hat den Effekt einer guten Wartbarkeit. Sollten zum Beispiel drei Rolls pro Frame erlaubt sein, so muss man nur eine  einzige Stelle im Code ändern, um die Regeländerung zu implementieren.
