@@ -2,7 +2,7 @@
 #include "Package.h"
 #include <algorithm>
 
-CriticalPathFinder::CriticalPathFinder(const std::unordered_map<int, Package*>& package_map) : package_map(package_map) {}
+CriticalPathFinder::CriticalPathFinder(const std::unordered_map<int, std::shared_ptr<Package>>& package_map) : package_map(package_map) {}
 
 void CriticalPathFinder::complete() {
     complete_earliest();
@@ -27,7 +27,7 @@ void CriticalPathFinder::complete_earliest() {
 bool CriticalPathFinder::update_earliest_start(Package& package) {
     int max_dependency_finish_time = 0;
     for (int dependency_id : package.get_dependencies()) {
-        Package* dependency = package_map.at(dependency_id);
+        auto dependency = package_map.at(dependency_id).get();
         if (dependency->get_earliest_finish() == Package::UNSET_TIME) {
             return false;
         }
@@ -68,7 +68,7 @@ bool CriticalPathFinder::update_dependencies_latest_finish(Package& package) {
     int package_latest_start = package.get_latest_start();
 
     for (int dependency_id : package.get_dependencies()) {
-        Package* dependency = package_map.at(dependency_id);
+        auto dependency = package_map.at(dependency_id).get();
         int dependency_latest_finish = dependency->get_latest_finish();
 
         if (dependency_latest_finish > package_latest_start) {

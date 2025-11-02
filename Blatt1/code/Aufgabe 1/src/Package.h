@@ -24,16 +24,6 @@ public:
      */
     Package(int id, int duration, const std::vector<int>& dependencies);
 
-    /**
-     * @brief Constructs a Package and sets its latest finish time.
-     * @param id The unique identifier for the package.
-     * @param duration The time required to complete the package.
-     * @param dependencies A vector of IDs of packages that must be completed before this one can start.
-     * @param latest_finish The latest possible time this package can be finished.
-     */
-    Package(int id, int duration, const std::vector<int>& dependencies, int latest_finish);
-
-    // --- Getters ---
     int get_id() const { return id; }
     int get_earliest_start() const { return earliest_start; }
     int get_earliest_finish() const { return earliest_finish; }
@@ -42,8 +32,6 @@ public:
     int get_duration() const { return duration; }
     int get_slack() const { return slack; }
     const std::vector<int>& get_dependencies() const { return dependencies; }
-
-    // --- Setters ---
 
     /**
      * @brief Sets the earliest start time and calculates the earliest finish time.

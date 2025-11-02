@@ -1,20 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <unordered_map>
 
 class Package;
-/**
-Maximilian Peresunchak (st152466@stud.uni-stuttgart.de)
-Nico Reng (st188620@stud.uni-stuttgart.de)
-Viorel Tsigos (st188085@stud.uni-stuttgart.de)
-Philip Reimann (st182312@stud.uni-stuttgart.de)
-Christian Keller (st166512@stud.uni-stuttgart.de)
-Florian Frank  (st@stud.uni-stuttgart.de)
-Johannes Heugel (st@stud.uni-stuttgart.de)
-Maysaa Abualqumboz (st@stud.uni-stuttgart.de)
-Benedikt Wachmer (st177118@stud.uni-stuttgart.de)
-Miles Holl (st@stud.uni-stuttgart.de)
-*/
 
 /**
  * @class CriticalPathFinder
@@ -33,7 +22,7 @@ public:
      * @brief Constructs a CriticalPathFinder.
      * @param package_map A map of package IDs to Package pointers representing the project.
      */
-    explicit CriticalPathFinder(const std::unordered_map<int, Package*>& package_map);
+    explicit CriticalPathFinder(const std::unordered_map<int, std::shared_ptr<Package>>& package_map);
 
     /**
      * @brief Runs the complete CPM calculation process.
@@ -76,5 +65,5 @@ private:
     bool update_dependencies_latest_finish(Package& package);
 
     /// A map of package IDs to non-owning pointers of the packages.
-    const std::unordered_map<int, Package*>& package_map;
+    const std::unordered_map<int, std::shared_ptr<Package>>& package_map;
 };
