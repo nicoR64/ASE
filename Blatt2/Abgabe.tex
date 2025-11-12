@@ -25,5 +25,24 @@
 % Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
 % Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
 
-
+\section*{Aufgabe 3:}
+\begin{enumerate}[label=\alph*)]
+    \item Man sieht schnell dass es sehr wirr ist, Entwickler haben eigene REST-Endpunkte implementiert. Zudem wissen die Entwickler selbst nicht genau wie andere Module funktionieren und arbeiten nur an ihrer eigenen Komponenten. Dies führt zu vielen Fehlern und Problemen, sowie zu einem hohen Wartungsaufwand. Außerdem wird es sehr sicher zu Mergekonflikten kommen.
+    \item \textbf{Wartbarkeit:} \\
+    Diese ist wie schon vorher erwähnt, nicht wirklich gegeben, da die Entwickler selbst nicht einen guten Überblick über das Gesamtprojekt haben, das erschwert natürlich die Wartung und es erhöht auch die Komplexität des Systems. Zudem denke ich auch, dass es zu Mergekonflikten kommen wird, da anscheinend nicht viel Kommunikation zwischen den Entwicklern stattfindet. \\\\
+    \textbf{Skalierbarkeit:}\\
+    Durch das manuelle Deployment auf nur einen zentralen Server, wird es sehr sicher zu Problemen kommen, denn die Infrastruktur und der Server limitiert ist. Die Datenbanken von den Microservices könnten einzelne Services ein wenig verbessern. \\\\
+    \textbf{Sicherheit:} \\
+    Laut dem Sicherheitsbeauftragten, sind die Kommunikationswege zwischen Maschinen und der Cloud unverschlüsselt. Das ist generell ein großes Sicherheitsrisiko, da so ein Angreifer leicht an die Daten kommen kann. Hier sollte man decryption und encryption Verfahren benutzen, die wir in GIS beigebracht bekommen.
+    \item Wie schon gerade erwähnt, kann ein Angreifer leicht an die Daten kommen, da die Kommunikation unverschlüsselt ist. Dadurch können senible Daten von wie Produktionsdaten abgefriffen werden, welche ein großes Sicherheitsrisiko darstellen. Durch die Verwaltung bzw. das Deployment auf nur einem Server, kann es zu einem Single Point of Failure kommen, also wenn der Server ausfällt, fällt das ganze System aus. Zudem wenn nur ein einziger Service ausfällt muss man den Server auch komplett neustarten, d.h. auch die anderen Services sind dann nicht mehr verfügbar, bis der Server wieder online ist. Das letzte Risiko, ist das durch die schlechte Kommunikation zwischen den Enwicklern, Fehler im Symstem entstehen können, die ggf. auch zu Sicherheitslükcne führen können. Dadurch dass die einzelnen Entwickler nicht mal einen Überblick über mehrere Komponenten haben, können sich Sicherheitslücken an den Schnittstellen einschleichen.
+    \item In der Vorlesung wurden bisher keine konkreten Architekturen vorgestellt, deshalb habe ich nach einiger Recherche folgende Vorschläge: Eine Architektur mit Microservices mit Orchestrierung und Zero Trust. Durch Microservices-Architektur reduzieren wir die Gefahr von einem kompletten Serverneustarts. Jeder Service läuft also unabhängig voneinander. Wenn ein Service ausfällt, laufen die anderne einfach weiter. Durch ein API Gateway kann man die Sicherheit erhöhen. Es terminiert die Kommunikation von außen und kann TLS/SSL Verschlüsselung erzwingen. Durch Zero-Trust kann man auch die ende-zu-ende Verschlüsselung und Authentifizierung erzwingen. Also muss man sich vorher authentifizieren bevor man Daten abrufen kann. Man könnte z.B. OAuth 2.0 verwenden.  
+    \item \textbf{Architekturrevies:}\\
+    Ich würde Architekturrevies vorschlagen, da so die Entwickler gezwungen sind sich mit dem Gesamtsystem auseinanderzusetzen und nicht nur mit ihrer eigenen Komponente. Dadurch können Fehler und Probleme frühzeitig erkannt werden. Zudem ist es so möglich, dass keine Abweichungen zum Endprodukt entstehen, da die Entwickler sich regelmäßig mit dem Gesamtsystem beschäftigen müssen. \\\\
+    \textbf{Verschlüsselung:} \\
+    Es sollte eine schnellstmögliche Verschlüsselung (beispielsweise TLS oder SSL) verwendet werden, damit die komplette Kommunikation zwischen den Maschinen und der Cloud verschlüsselt ist. Das könnte man über ein API Gateway machen. \\\\
+    \textbf{Dokumentation:} \\
+    Durch eine gute Dokumentation können die Entwickler besser verstehen, was die anderen Komponenten machen und wie sie richtig ohne Bugs funktionieren. Dadruch könnte man seine Komponente besser an die anderen Komponenten anpassen und so erstenes Fehler und Debugging Zeit sparen und zweitens das Risiko von Sicherheitslücken an den Schnittstellen verringern. \\\\
+    \textbf{Kommunikation:} \\
+    Wie es aus den Interviews hervorgeht, gibt es anscheinend wenig Kommunikation innerhalb des Teams.Der Projektleiter möchte, dass die Softwareplattform innerhalb von drei Monaten beim ersten Kunden lauffähig ist. Aus den Interviews geht hervor, dass hier noch viel Arbeit zu tun ist und generell der Überlick anscheinend über das Projekt fehlt, also der aktuelle Stand des Projekts. Hierzu wären regelmäßige Meetings mit sinnvollen Strukturen wie Scrummaster etc. sinnvoll. 
+\end{enumerate}
 \end{document}
