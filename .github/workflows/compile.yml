@@ -180,6 +180,10 @@ jobs:
 
       - name: create ZIP of code for ${{ matrix.sheet }}
         run: |
+            if [ ! -d "${{ env.SHEET_DIR }}/code" ]; then
+              echo "No code directory found in ${{ env.SHEET_DIR }}, skipping ZIP creation."
+              exit 0
+            fi
             set -euo pipefail
             ZIP_NAME="SE${{ env.SHEET_NUM }}-Gruppe07.zip"
             cd "${{ env.SHEET_DIR }}/code"
@@ -192,6 +196,7 @@ jobs:
         with:
           name: Blatt${{ env.SHEET_NUM }}-code
           path: '${{ env.SHEET_DIR }}/SE${{ env.SHEET_NUM }}-Gruppe07.zip'
+          if-no-files-found: ignore
 
 
   package:
