@@ -7,6 +7,11 @@ on:
     paths-ignore:
       - '.github/**'
   workflow_dispatch:
+    inputs:
+        BUILD_SHEETS:
+            description: 'A comma-separated list of sheets to build (e.g., Blatt1,Blatt3). Overrides change detection.'
+            required: false
+            default: ''
 
 jobs:
   discover:
@@ -58,7 +63,7 @@ jobs:
           echo "matrix=$MATRIX_JSON" >> "$GITHUB_OUTPUT"
 
       - name: Get all sheets and build matrix
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.BUILD_SHEETS == '' ) }}
         id: full
         run: |
           set -euo pipefail
@@ -79,6 +84,37 @@ jobs:
   
           echo "matrix=$MATRIX_JSON" >> "$GITHUB_OUTPUT"
           echo "should_run=true" >> "$GITHUB_OUTPUT"
+
+      - name: Get specified sheets and build matrix
+        if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.BUILD_SHEETS != '' ) }}
+        id: full
+        run: |
+          set -euo pipefail
+          
+          IFS=',' read -r -a INPUT_SHEETS <<< "${{ github.event.inputs.BUILD_SHEETS }}"
+          
+          VALID_SHEETS=()
+          
+          for sheet in "${INPUT_SHEETS[@]}"; do
+            if [ -d "$sheet" ]; then
+              VALID_SHEETS+=("$sheet")
+            else
+              echo "Warning: Specified sheet directory '$sheet' does not exist and will be ignored." >&2
+            fi
+          done
+          
+          if [ ${#VALID_SHEETS[@]} -eq 0 ]; then
+            MATRIX_JSON="[]"
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            MATRIX_JSON=$(python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().strip().split("\n")))' <<< "$(printf '%s\n' "${VALID_SHEETS[@]}")")
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+          
+          echo "Matrix as JSON:"
+          echo "$MATRIX_JSON"
+  
+          echo "matrix=$MATRIX_JSON" >> "$GITHUB_OUTPUT"
 
   build:
     needs: discover
