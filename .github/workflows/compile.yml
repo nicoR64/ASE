@@ -87,7 +87,7 @@ jobs:
 
       - name: Get specified sheets and build matrix
         if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.BUILD_SHEETS != '' ) }}
-        id: full
+        id: specified
         run: |
           set -euo pipefail
           
