@@ -24,6 +24,25 @@
 % Nutze den \exercise{Aufgabenname} Befehl, um eine neue Aufgabe zu beginnen.
 % Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
 % Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
+\section*{Aufgabe 2:}
+\begin{itemize}[label={}]
+\begin{center}  
+
+    \item[]
+    \includegraphics[width=1.25\linewidth]{EX02_Komponentendiagramm_2.png}
+    \captionof{figure}{Komponentendiagramm}
+
+    \item[]
+    \includegraphics[width=1.25\linewidth]{EX02_Deploymentdiagramm_2.png}
+    \captionof{figure}{Deploymentdiagramm}
+\end{center}
+
+    \item[c)]
+    Ein kritischer Engpass ist die Datenplattform, da sie sowohl die Sensordaten als auch die Anfragen entgegennehmen muss. Zusätzlich müssen die Sensordaten verarbeitet werden. Kommen nun noch sehr viele Statistik- und Routenanfragen gleichzeitig von Dashboard und App hinzu, könnte dies zu einer Leistungs­minderung führen.
+
+    \item[d)]
+    Ein geeignetes Entwurfsmuster besteht darin, die einzelne Datenplattform in mehrere kleinere Plattformen zu unterteilen, z. B. eine pro Stadtteil. Dadurch wird die zu tragende Last aufgeteilt, und die horizontale Architektur ermöglicht eine einfache Skalierung. Das System kann so flexibel an wachsende Städte angepasst werden. Die Ausfallsicherheit wird dadurch verbessert, dass der Ausfall einer Datenplattform nicht zum Ausfall des gesamten Systems führt, sondern nur zu einem Teilausfall des betroffenen Bereichs.
+\end{itemize}
 
 \section*{Aufgabe 3:}
 \begin{enumerate}[label=\alph*)]
