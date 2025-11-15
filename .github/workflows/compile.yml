@@ -258,6 +258,7 @@ jobs:
         with:
           name: ${{ env.SHEET_DIR }}-code
           path: publish
+        continue-on-error: true
 
       - name: Deploy to Branch ${{ env.SHEET_DIR }}
         uses: peaceiris/actions-gh-pages@v4
