@@ -129,6 +129,7 @@ jobs:
         with:
           scheme: small
           run: |
+            tlmgr update --self
             tlmgr install algorithm2e pgf ifoddpage tools relsize enumitem
             latexmk -cd -pdf -file-line-error -halt-on-error -interaction=nonstopmode ${{ env.SHEET_DIR }}/wrapper.tex
             latexmk -cd -c ${{ env.SHEET_DIR }}/wrapper.tex
