@@ -24,25 +24,6 @@
 % Nutze den \exercise{Aufgabenname} Befehl, um eine neue Aufgabe zu beginnen.
 % Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
 % Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
-\section*{Aufgabe 2:}
-\begin{itemize}[label={}]
-\begin{center}  
-
-    \item[]
-    \includegraphics[width=1.25\linewidth]{./Tex-Graphics/EX02_Komponentendiagramm_2.png}
-    \caption{figure}{Komponentendiagramm}
-
-    \item[]
-    \includegraphics[width=1.25\linewidth]{./Tex-Graphics/EX02_Deploymentdiagramm_2.png}
-    \caption{figure}{Deploymentdiagramm}
-\end{center}
-
-    \item[c)]
-    Ein kritischer Engpass ist die Datenplattform, da sie sowohl die Sensordaten als auch die Anfragen entgegennehmen muss. Zusätzlich müssen die Sensordaten verarbeitet werden. Kommen nun noch sehr viele Statistik- und Routenanfragen gleichzeitig von Dashboard und App hinzu, könnte dies zu einer Leistungs­minderung führen.
-
-    \item[d)]
-    Ein geeignetes Entwurfsmuster besteht darin, die einzelne Datenplattform in mehrere kleinere Plattformen zu unterteilen, z. B. eine pro Stadtteil. Dadurch wird die zu tragende Last aufgeteilt, und die horizontale Architektur ermöglicht eine einfache Skalierung. Das System kann so flexibel an wachsende Städte angepasst werden. Die Ausfallsicherheit wird dadurch verbessert, dass der Ausfall einer Datenplattform nicht zum Ausfall des gesamten Systems führt, sondern nur zu einem Teilausfall des betroffenen Bereichs.
-\end{itemize}
 
 \section*{Aufgabe 1:}
 \begin{enumerate}[label=\alph*)]
@@ -109,6 +90,31 @@
     
     Neben den schnell alternden Analyseergebnissen, stellt auch der ausschließliche Fokus auf Features ein weiteres Problem für das Kano-Modell dar. Die Gefahr: das ganzheitliche Nutzerlebnis gerät aus den Augen der Entwickler, stattdessen wird zu viel Zeit in die Optimierung einzelner Features gesteckt. Um dem entgegenzuwirken sollten nutzerzentrierte Methoden, wie z.B. User Story Mapping oder Customer Journey Analysen, mit dem Kona-Modell kombiniert werden und im Kontext von GreenRide, Feature-Bewertungen immer in den Kontext der gesamten Mobilitätserfahrung gesetzt werden.
 \end{enumerate}
+
+\pagebreak
+
+\section*{Aufgabe 2:}
+\begin{itemize}[label={}]
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{./Tex-Graphics/EX02_Komponentendiagramm_2.png}
+        \caption{Komponentendiagramm}
+    \end{figure}
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=\linewidth]{./Tex-Graphics/EX02_Deploymentdiagramm_2.png}
+        \caption{Deploymentdiagramm}
+    \end{figure}
+
+    \pagebreak
+
+    \item[c)]
+    Ein kritischer Engpass ist die Datenplattform, da sie sowohl die Sensordaten als auch die Anfragen entgegennehmen muss. Zusätzlich müssen die Sensordaten verarbeitet werden. Kommen nun noch sehr viele Statistik- und Routenanfragen gleichzeitig von Dashboard und App hinzu, könnte dies zu einer Leistungsminderung führen.
+
+    \item[d)]
+    Ein geeignetes Entwurfsmuster besteht darin, die einzelne Datenplattform in mehrere kleinere Plattformen zu unterteilen, z.B. eine pro Stadtteil. Dadurch wird die zu tragende Last aufgeteilt, und die horizontale Architektur ermöglicht eine einfache Skalierung. Das System kann so flexibel an wachsende Städte angepasst werden. Die Ausfallsicherheit wird dadurch verbessert, dass der Ausfall einer Datenplattform nicht zum Ausfall des gesamten Systems führt, sondern nur zu einem Teilausfall des betroffenen Bereichs.
+\end{itemize}
 
 \pagebreak
 
