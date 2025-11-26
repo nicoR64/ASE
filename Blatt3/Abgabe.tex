@@ -14,12 +14,79 @@
 % \input: Fügt KEINEN Seitenumbruch nach dem Text ein
 \input{../assets/Packages.tex}
 \input{../assets/FormatAndHeader.tex}
-
+\renewcommand{\arraystretch}{1.5} 
+\usepackage{pdflscape}
 \setcounter{exnum}{1} % Nummer der Aufgabe
 
 \begin{document}
-
 \input{../assets/Titelseite.tex} % Titelseite einbinden
+\section*{\underline{Aufgabe 1:}}
+\begin{enumerate}[label=\alph*)]
+  \item ~ \\ \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Äquivalenzklasse} & ~~~\textbf{Status}~~~ & \textbf{Beschreibung}                  \\
+    \noalign{\hrule height 1.2pt}
+    \noalign{\vskip 1pt}
+    \noalign{\hrule height 1.2pt}
+    $ÄK_1$~~~                    & ~~~gültig~~~          & Status == GEPLANT                      \\
+    \hline
+    $ÄK_2$~~~                    & ~~~ungültig~~~        & Status != GEPLANT (status == ABGESAGT) \\
+          \hline
+          $ÄK_3$~~~                    & ~~~gültig~~~          & 0 $\leq$ freie Plaetze $\leq$ 500       \\
+          \hline
+          $ÄK_4$~~~                    & ~~~ungültig~~~        & freie Plaetze $<$ 0                     \\
+          \hline
+          $ÄK_5$~~~                    & ~~~ungültig~~~        & freie Plaetze $>$ 500                   \\
+          \hline
+          $ÄK_6$~~~                    & ~~~gültig~~~          & 1 $\leq$ Anzahl Tickets $\leq$ 6       \\
+          \hline
+          $ÄK_7$~~~                    & ~~~ungültig~~~        & Anzahl Tickets $<$ 1                   \\
+          \hline
+          $ÄK_8$~~~                    & ~~~ungültig~~~        & Anzahl Tickets $>$ 6                   \\
+          \hline
+          $ÄK_9$~~~                    & ~~~gültig~~~          & freie Plaetze $\geq$ Anzahl Tickets     \\
+          \hline
+          $ÄK_{10}$~~~                   & ~~~ungültig~~~        & freie Plaetze $<$ Anzahl Tickets        \\
+          \hline
+        \end{tabular} 
+        ~\\\\\\\\\\\\
+        Die Teilaufgabe b) befindet sich auf der nächsten Seite.
+        \newpage
+        \end{enumerate}
+
+        \begin{landscape}
+        b) ~ \\ \begin{tabular}{|c|c|c|c|c|c|c|}
+          \hline
+          \textbf{Testklasse} & \textbf{Status} & \textbf{freiePlaetze} & \textbf{anzahlTickets} & \textbf{Erwartetes Ergebnis} & \textbf{Beschreibung Testcase} & \textbf{ÄK} \\
+          \noalign{\hrule height 1.2pt}
+          \noalign{\vskip 1pt}
+          \noalign{\hrule height 1.2pt}
+          $TK_1$                & GEPLANT         & 1                     & 1                      & true                         & Min. Tickets, Min. Plätze      & 1, 3, 6, 9            \\
+          \hline
+          $TK_2$                & GEPLANT         & 500                   & 6                      & true                         & Max. Plätze, Max. Tickets      & 1, 3, 6, 9            \\
+          \hline
+          $TK_3$                & GEPLANT         & 6                     & 6                      & true                         & Max. Tickets, passend          & 1, 3, 6, 9            \\
+          \hline
+          $TK_4$                & ABGESAGT        & 100                   & 2                      & false                        & Status falsch                  & 2, 3, 6, 9            \\
+          \hline
+          $TK_5$                & GEPLANT         & -1                    & 1                      & false                        & Plätze edgecase min.           & 1, 4, 6, 10           \\
+          \hline
+          $TK_6$                & GEPLANT         & -50                   & 5                      & false                        & Plätze unter min.              & 1, 4, 6, 10           \\
+          \hline
+          $TK_7$                & GEPLANT         & 501                   & 3                      & false                        & Plätze edgecase max.           & 1, 5, 6, 9            \\
+          \hline
+         $ TK_8 $               & GEPLANT         & 600                   & 4                      & false                        & Plätze über max.               & 1, 5, 6, 9            \\
+          \hline
+          $TK_9$                & GEPLANT         & 400                   & 0                      & false                        & anzahlTickets edgecase min.    & 1, 3, 7, 9            \\
+          \hline
+         $ TK_{10}$               & GEPLANT         & 400                   & -25                    & false                        & anzahlTickets unter min.       & 1, 3, 7, 9            \\
+          \hline
+         $ TK_{11}$               & GEPLANT         & 400                   & 7                      & false                        & anzahlTickets edgecase max.    & 1, 3, 8, 9            \\
+          \hline
+          $TK_{12}$               & GEPLANT         & 4                     & 5                      & false                        & freiePlaetze < anzahlTickets   & 1, 3, 6, 10           \\
+          \hline
+        \end{tabular}
+\end{landscape}
 
 % Nutze den \exercise{Aufgabenname} Befehl, um eine neue Aufgabe zu beginnen.
 % Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
