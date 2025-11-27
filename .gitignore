@@ -111,6 +111,7 @@ nb-configuration.xml
 *.out
 *.toc
 *.synctex.gz
+*.synctex(busy)
 *.fdb_latexmk
 *.fls
 *.gz

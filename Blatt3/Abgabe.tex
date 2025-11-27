@@ -16,80 +16,288 @@
 \input{../assets/FormatAndHeader.tex}
 \renewcommand{\arraystretch}{1.5} 
 \usepackage{pdflscape}
+\usepackage{diagbox}
+\hbadness=99999 % No fucking underfull hbox warning
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric}
+\newcommand{\textarrow}[1]{%
+    \tikz[baseline, inner sep=0pt] {
+        % 1. Create a hidden node with the text to measure width
+        \node[anchor=south, font=\scriptsize, align=center, inner ysep=2pt] (txt) at (0,0) {#1};
+        % 2. Draw the arrow underneath it
+        \draw[->, >=Latex, thick, rounded corners] 
+             ($(txt.south west)$) -- ($(txt.south east) + (3mm, 0)$);
+    }%
+}
+
 \setcounter{exnum}{1} % Nummer der Aufgabe
 
 \begin{document}
 \input{../assets/Titelseite.tex} % Titelseite einbinden
-\section*{\underline{Aufgabe 1:}}
+\exercise{Funktionsorientierter Test – Online-Ticketsystem}
 \begin{enumerate}[label=\alph*)]
-  \item ~ \\ \begin{tabular}{|c|c|c|}
-    \hline
-    \textbf{Äquivalenzklasse} & ~~~\textbf{Status}~~~ & \textbf{Beschreibung}                  \\
-    \noalign{\hrule height 1.2pt}
-    \noalign{\vskip 1pt}
-    \noalign{\hrule height 1.2pt}
-    $ÄK_1$~~~                    & ~~~gültig~~~          & Status == GEPLANT                      \\
-    \hline
-    $ÄK_2$~~~                    & ~~~ungültig~~~        & Status != GEPLANT (status == ABGESAGT) \\
+  \item ~ \\
+        \begin{tabular}{|c|c|c|}
           \hline
-          $ÄK_3$~~~                    & ~~~gültig~~~          & 0 $\leq$ freie Plaetze $\leq$ 500       \\
-          \hline
-          $ÄK_4$~~~                    & ~~~ungültig~~~        & freie Plaetze $<$ 0                     \\
-          \hline
-          $ÄK_5$~~~                    & ~~~ungültig~~~        & freie Plaetze $>$ 500                   \\
-          \hline
-          $ÄK_6$~~~                    & ~~~gültig~~~          & 1 $\leq$ Anzahl Tickets $\leq$ 6       \\
-          \hline
-          $ÄK_7$~~~                    & ~~~ungültig~~~        & Anzahl Tickets $<$ 1                   \\
-          \hline
-          $ÄK_8$~~~                    & ~~~ungültig~~~        & Anzahl Tickets $>$ 6                   \\
-          \hline
-          $ÄK_9$~~~                    & ~~~gültig~~~          & freie Plaetze $\geq$ Anzahl Tickets     \\
-          \hline
-          $ÄK_{10}$~~~                   & ~~~ungültig~~~        & freie Plaetze $<$ Anzahl Tickets        \\
-          \hline
-        \end{tabular} 
-        ~\\\\\\\\\\\\
-        Die Teilaufgabe b) befindet sich auf der nächsten Seite.
-        \newpage
-        \end{enumerate}
-
-        \begin{landscape}
-        b) ~ \\ \begin{tabular}{|c|c|c|c|c|c|c|}
-          \hline
-          \textbf{Testklasse} & \textbf{Status} & \textbf{freiePlaetze} & \textbf{anzahlTickets} & \textbf{Erwartetes Ergebnis} & \textbf{Beschreibung Testcase} & \textbf{ÄK} \\
+          \textbf{Äquivalenzklasse} & ~~~\textbf{Status}~~~ & \textbf{Beschreibung}                  \\
           \noalign{\hrule height 1.2pt}
           \noalign{\vskip 1pt}
           \noalign{\hrule height 1.2pt}
-          $TK_1$                & GEPLANT         & 1                     & 1                      & true                         & Min. Tickets, Min. Plätze      & 1, 3, 6, 9            \\
+          $\text{ÄK}_1$~~~          & ~~~gültig~~~          & Status == GEPLANT                      \\
           \hline
-          $TK_2$                & GEPLANT         & 500                   & 6                      & true                         & Max. Plätze, Max. Tickets      & 1, 3, 6, 9            \\
+          $\text{ÄK}_2$~~~          & ~~~ungültig~~~        & Status != GEPLANT (status == ABGESAGT) \\
           \hline
-          $TK_3$                & GEPLANT         & 6                     & 6                      & true                         & Max. Tickets, passend          & 1, 3, 6, 9            \\
+          $\text{ÄK}_3$~~~          & ~~~gültig~~~          & 0 $\leq$ freie Plaetze $\leq$ 500      \\
           \hline
-          $TK_4$                & ABGESAGT        & 100                   & 2                      & false                        & Status falsch                  & 2, 3, 6, 9            \\
+          $\text{ÄK}_4$~~~          & ~~~ungültig~~~        & freie Plaetze $<$ 0                    \\
           \hline
-          $TK_5$                & GEPLANT         & -1                    & 1                      & false                        & Plätze edgecase min.           & 1, 4, 6, 10           \\
+          $\text{ÄK}_5$~~~          & ~~~ungültig~~~        & freie Plaetze $>$ 500                  \\
           \hline
-          $TK_6$                & GEPLANT         & -50                   & 5                      & false                        & Plätze unter min.              & 1, 4, 6, 10           \\
+          $\text{ÄK}_6$~~~          & ~~~gültig~~~          & 1 $\leq$ Anzahl Tickets $\leq$ 6       \\
           \hline
-          $TK_7$                & GEPLANT         & 501                   & 3                      & false                        & Plätze edgecase max.           & 1, 5, 6, 9            \\
+          $\text{ÄK}_7$~~~          & ~~~ungültig~~~        & Anzahl Tickets $<$ 1                   \\
           \hline
-         $ TK_8 $               & GEPLANT         & 600                   & 4                      & false                        & Plätze über max.               & 1, 5, 6, 9            \\
+          $\text{ÄK}_8$~~~          & ~~~ungültig~~~        & Anzahl Tickets $>$ 6                   \\
           \hline
-          $TK_9$                & GEPLANT         & 400                   & 0                      & false                        & anzahlTickets edgecase min.    & 1, 3, 7, 9            \\
+          $\text{ÄK}_9$~~~          & ~~~gültig~~~          & freie Plaetze $\geq$ Anzahl Tickets    \\
           \hline
-         $ TK_{10}$               & GEPLANT         & 400                   & -25                    & false                        & anzahlTickets unter min.       & 1, 3, 7, 9            \\
-          \hline
-         $ TK_{11}$               & GEPLANT         & 400                   & 7                      & false                        & anzahlTickets edgecase max.    & 1, 3, 8, 9            \\
-          \hline
-          $TK_{12}$               & GEPLANT         & 4                     & 5                      & false                        & freiePlaetze < anzahlTickets   & 1, 3, 6, 10           \\
+          $\text{ÄK}_{10}$~~~       & ~~~ungültig~~~        & freie Plaetze $<$ Anzahl Tickets       \\
           \hline
         \end{tabular}
+        ~\\\\\\\\\\\\
+        Die Teilaufgabe b) befindet sich auf der nächsten Seite.
+        \newpage
+\end{enumerate}
+
+\begin{landscape}
+  b) ~ \\\\
+  \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    \textbf{Testklasse} & \textbf{Status} & \textbf{freiePlaetze} & \textbf{anzahlTickets} & \textbf{Erwartetes Ergebnis} & \textbf{Beschreibung Testcase} & \textbf{ÄK} \\
+    \noalign{\hrule height 1.2pt}
+    \noalign{\vskip 1pt}
+    \noalign{\hrule height 1.2pt}
+    $TK_1$              & GEPLANT         & 1                     & 1                      & true                         & Min. Tickets, Min. Plätze      & 1, 3, 6, 9  \\
+    \hline
+    $TK_2$              & GEPLANT         & 500                   & 6                      & true                         & Max. Plätze, Max. Tickets      & 1, 3, 6, 9  \\
+    \hline
+    $TK_3$              & GEPLANT         & 6                     & 6                      & true                         & Max. Tickets, passend          & 1, 3, 6, 9  \\
+    \hline
+    $TK_4$              & ABGESAGT        & 100                   & 2                      & false                        & Status falsch                  & 2, 3, 6, 9  \\
+    \hline
+    $TK_5$              & GEPLANT         & -1                    & 1                      & false                        & Plätze edgecase min.           & 1, 4, 6, 10 \\
+    \hline
+    $TK_6$              & GEPLANT         & -50                   & 5                      & false                        & Plätze unter min.              & 1, 4, 6, 10 \\
+    \hline
+    $TK_7$              & GEPLANT         & 501                   & 3                      & false                        & Plätze edgecase max.           & 1, 5, 6, 9  \\
+    \hline
+    $ TK_8 $            & GEPLANT         & 600                   & 4                      & false                        & Plätze über max.               & 1, 5, 6, 9  \\
+    \hline
+    $TK_9$              & GEPLANT         & 400                   & 0                      & false                        & anzahlTickets edgecase min.    & 1, 3, 7, 9  \\
+    \hline
+    $ TK_{10}$          & GEPLANT         & 400                   & -25                    & false                        & anzahlTickets unter min.       & 1, 3, 7, 9  \\
+    \hline
+    $ TK_{11}$          & GEPLANT         & 400                   & 7                      & false                        & anzahlTickets edgecase max.    & 1, 3, 8, 9  \\
+    \hline
+    $TK_{12}$           & GEPLANT         & 4                     & 5                      & false                        & freiePlaetze < anzahlTickets   & 1, 3, 6, 10 \\
+    \hline
+  \end{tabular}
 \end{landscape}
 
-% Nutze den \exercise{Aufgabenname} Befehl, um eine neue Aufgabe zu beginnen.
-% Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
-% Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
+\begin{landscape}
+  \exercise{Zustandsbasierter Test – Heißgetränkeautomat}
+  \begin{enumerate}[label=\alph*)]
+    \item ~ \\
+          \begin{tikzpicture}[
+              % Global style configuration
+              node distance = 4cm and 5cm, % Vertical and Horizontal spacing
+              box/.style = {
+                  draw,
+                  rectangle,
+                  thick,
+                  minimum width=3cm,
+                  minimum height=1.5cm,
+                  align=center,
+                  font=\sffamily
+                },
+              arrow/.style = {
+                  ->,
+                  >=Latex,
+                  thick,
+                  rounded corners
+                },
+              label text/.style = {
+                  midway,
+                  font=\sffamily\small,
+                  align=center
+                }
+            ]
 
+            % --- Nodes (States) ---
+
+            % 1. Ausgeschaltet
+            \node[box] (off) {Ausgeschaltet};
+
+            % 2. Betriebsbereit (to the right of Off)
+            \node[box, right=of off] (ready) {Betriebsbereit};
+
+            % 3. Kredit zustand (to the right of Ready)
+            \node[box, right=of ready] (credit) {Kreditzustand};
+
+            % 4. Zubereitung (CENTERED below Ready and Credit)
+            % Logic: Take the midpoint (!0.5!) between ready and credit, then move down 3cm
+            \node[box] (prep) at ($(ready.south)!0.5!(credit.south) + (0, -4cm)$) {Zubereitung};
+
+            % --- Edges (Transitions) ---
+
+            % Start Arrow
+            \draw[arrow] ($(off.west) + (-1.5, 0)$) -- (off.west) node[] {};
+
+            % Off <-> Ready (Parallel straight lines)
+            \draw[arrow] ([yshift=2mm]off.east) -- ([yshift=2mm]ready.west)
+            node[label text, above] {einschalten /\\ Anzeige Münzeinwurf,\\ Warten auf Münzeinwurf};
+            \draw[arrow] ([yshift=-2mm]ready.west) -- ([yshift=-2mm]off.east)
+            node[label text, below] {ausschalten};
+
+            % Ready <-> Credit (Parallel straight lines)
+            \draw[arrow] ([yshift=2mm]ready.east) -- ([yshift=2mm]credit.west)
+            node[label text, above] {Münzeinwurf /\\ Warten auf Getränkewahl};
+            \draw[arrow] ([yshift=-2mm]credit.west) -- ([yshift=-2mm]ready.east)
+            node[label text, below] {Vorgang abbrechen /\\ Kreditrückgabe,\\ Warten auf Münzeinwurf};
+
+            % Credit -> Prep (Diagonal down)
+            \draw[arrow] (credit) -- (prep)
+            node[label text, sloped, below, xshift=0.3cm] {Getränkeauswahl /\\ Tee- oder Kaffee- \\zubereitung starten};
+
+            % Prep -> Ready (Diagonal up)
+            \draw[arrow] (prep) -- (ready)
+            node[label text, sloped, below, xshift=-0.3cm] {Getränk fertig,\\ Getränkeausgabe /\\ Warten auf Münzeinwurf};
+
+            % Credit -> Off (Curved top)
+            \draw[arrow] (credit.north) .. controls +(up:2.5cm) and +(up:2.5cm) .. (off.north)
+            node[label text, above] {ausschalten};
+
+            % Prep -> Off (Curved bottom)
+            \draw[arrow] (prep.south) .. controls +(down:1.5cm) and +(down:3cm) .. (off.south)
+            node[label text, sloped, below] {ausschalten};
+
+          \end{tikzpicture}
+          \newpage
+
+    \item ~ \\
+          \begin{tabular}{|p{3.35cm}|p{4cm}|p{4cm}|p{4cm}|p{4cm}|}
+            \hline
+            \diagbox{Ereignis}{Zustand}
+             & Ausgeschaltet
+             & Betriebsbereit
+             & Kreditzustand
+             & Zubereitung                                   \\
+            \hline
+
+            % Row 1: einschalten
+            einschalten
+             & { \raggedright \emph{Betriebsbereit} \par }
+            { \raggedleft \footnotesize Anzeige Münzeinwurf, \\ warte auf Münzeinwurf \par }
+             & \emph{Betriebsbereit}
+             & \emph{Kreditzustand}
+             & \emph{Zubereitung}                            \\
+            \hline
+
+            % Row 2: Münzeinwurf
+            Münzeinwurf
+             & \emph{Ausgeschaltet}
+             & { \raggedright \emph{Kreditzustand} \par }
+            { \raggedleft \footnotesize Warten auf           \\ Getränkeauswahl \par }
+             & \emph{Kreditzustand}
+             & \emph{Zubereitung}                            \\
+            \hline
+
+            % Row 3: Getränkeauswahl
+            Getränkeauswahl
+             & \emph{Ausgeschaltet}
+             & \emph{Betriebsbereit}
+             & { \raggedright \emph{Zubereitung} \par }
+            { \raggedleft \footnotesize Tee- oder Kaffee-    \\ zubereitung starten \par }
+             & Zubereitung                                   \\
+            \hline
+
+            % Row 4: Getränk fertig...
+            Getränk fertig und Getränkeausgabe
+             & \emph{Ausgeschaltet}
+             & \emph{Betriebsbereit}
+             & \emph{Kreditzustand}
+             & { \raggedright \emph{Betriebsbereit} \par }
+            { \raggedleft \footnotesize Warten auf           \\ Münzeinwurf \par } \\
+            \hline
+
+            % Row 5: Vorgang abbrechen
+            Vorgang \newline abbrechen
+             & \emph{Ausgeschaltet}
+             & \emph{Betriebsbereit}
+             & { \raggedright \emph{Betriebsbereit} \par }
+            { \raggedleft \footnotesize Kreditrückgabe,      \\ Warten auf Münzeinwurf \par }
+             & \emph{Zubereitung}                            \\
+            \hline
+
+            % Row 6: ausschalten
+            ausschalten
+             & \emph{Ausgeschaltet}
+             & \emph{Ausgeschaltet}
+             & \emph{Ausgeschaltet}
+             & \emph{Ausgeschaltet}                          \\
+            \hline
+          \end{tabular}
+  \end{enumerate}
+\end{landscape}
+\begin{enumerate}
+  \item [c)] {
+        Um eine vollständige Zustandsüberdeckung zu erreichen, müssen alle Zustände mindestens einmal besucht werden. In diesem Fall lassen sich innerhalb eines Durchlaufs alle Zustände besuchen, also reicht ein einziger Testfall aus, um alle Zustände abzudecken. Dieser sieht wie folgt aus:
+        \begin{itemize}
+          \item Ausgeschaltet \textarrow{einschalten} Betriebsbereit
+          \item Betriebsbereit \textarrow{Münzeinwurf} Kreditzustand
+          \item Kreditzustand \textarrow{Getränkeauswahl} Zubereitung
+          \item Zubereitung \textarrow{ausschalten} Ausgeschaltet
+        \end{itemize}
+        So werden die Zustände Ausgeschaltet, Betriebsbereit, Kreditzustand und Zubereitung jeweils einmal besucht und eine vollständige Zustandsüberdeckung erreicht. Der Test ist erfolgreich, wenn alle Zustände erreicht werden können, andernfalls schlägt er fehl.
+        }
+
+  \item [d)] {
+        Um eine vollständige Zustandsübergangsüberdeckung zu erreichen, müssen alle möglichen Übergänge zwischen den Zuständen mindestens einmal durchlaufen werden. In diesem Fall gibt es insgesamt 8 Übergänge, die abgedeckt werden müssen. Drei mögliche Testfälle, die zusammen alle Übergänge abdecken, sehen wie folgt aus:
+        \begin{enumerate}[label=\roman*.]
+          \item \begin{itemize}
+                  \item Ausgeschaltet \textarrow{einschalten} Betriebsbereit
+                  \item Betriebsbereit \textarrow{Münzeinwurf} Kreditzustand
+                  \item Kreditzustand \textarrow{Getränkeauswahl} Zubereitung
+                  \item Zubereitung \textarrow{Getränk fertig, Getränkeausgabe} Betriebsbereit
+                  \item Betriebsbereit \textarrow{Münzeinwurf} Kreditzustand
+                  \item Kreditzustand \textarrow{Vorgang abbrechen} Betriebsbereit
+                  \item Betriebsbereit \textarrow{ausschalten} Ausgeschaltet \\
+                \end{itemize}
+          \item \begin{itemize}
+                  \item Ausgeschaltet \textarrow{einschalten} Betriebsbereit
+                  \item Betriebsbereit \textarrow{Münzeinwurf} Kreditzustand
+                  \item Kreditzustand \textarrow{ausschalten} Ausgeschaltet \\
+                \end{itemize}
+
+          \item \begin{itemize}
+                  \item Ausgeschaltet \textarrow{einschalten} Betriebsbereit
+                  \item Betriebsbereit \textarrow{ausschalten} Ausgeschaltet
+                  \item Ausgeschaltet \textarrow{einschalten} Betriebsbereit
+                  \item Betriebsbereit \textarrow{Münzeinwurf} Kreditzustand
+                  \item Kreditzustand \textarrow{Getränkeauswahl} Zubereitung
+                  \item Zubereitung \textarrow{ausschalten} Ausgeschaltet \\
+                \end{itemize}
+        \end{enumerate}
+        Das Testszenario ist erfolgreich, wenn alle Übergänge mindestens einmal durchlaufen wurden, andernfalls schlägt es fehl. Sprich, wenn ein Testfall fehlschlägt, schlägt das gesamte Szenario fehl.
+        }
+        \newpage
+  \item [e)] {
+        Um eine vollständige Ereignisüberdeckung zu erreichen, müssen alle möglichen Ereignisse mindestens einmal ausgelöst werden. Um dies zu automatisieren, nutzen wir eine modifizierte Tiefensuche. Dazu nehmen wir uns eine Datenstruktur zur Hilfe, welche alle bereits ausgelösten Ereignisse speichert.
+
+        Die Tiefensuche wird so modifiziert, dass sie bei der Verfolgung eines Pfades nur Zweige in Betracht zieht, die ein bisher noch nicht ausgelöstes Ereignis enthalten. Sobald ein Pfad endet, weil alle möglichen Übergänge zu bereits ausgelösten Ereignissen führen, müsste die Suche zurückgehen und einen anderen Pfad verfolgen. Da dies jedoch nicht so einfach möglich ist, wird stattdessen ein neuer Testfall gestartet, der am Anfangszustand beginnt und erneut eine Tiefensuche durchführt, dieses Mal aber den zunächst zu betrachtenden Übergang auf seinem Pfad wählt.
+
+        Dies wird so lange wiederholt, bis alle Ereignisse mindestens einmal ausgelöst wurden. Dieser Algorithmus funktioniert allerdings nur für zusammenhängende Zustandsautomaten, bei denen gewährleistet ist, dass sich alle Ereignisse von einem gemeinsamen Startzustand aus erreichen lassen. Sollte es mehrere Startzustände geben, würde der Algorithmus für jeden Startzustand separat ausgeführt werden müssen, was aber zu keinem Problem führt.
+
+        Das Testszenario ist erfolgreich, wenn die Datenstruktur am Ende alle Ereignisse enthält, andernfalls schlägt es fehl.
+        }
+\end{enumerate}
 \end{document}
