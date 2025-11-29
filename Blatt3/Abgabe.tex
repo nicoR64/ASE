@@ -87,7 +87,39 @@
           \hline
         \end{tabular}
 \end{landscape}
+\section*{\underline{Aufgabe 3:}}
+\begin{enumerate}
+  \setcounter{enumi}{1}  
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{../Tex-Graphics/EX03A31.png}
+    \caption{Kontrollflussgraph}
+    \label{fig:k1}
+\end{figure}
+  \item[b)] 
+    \begin{itemize}
+    \item Pfad 1(if Bedingung ist wahr.): $n_{\text{start}} \rightarrow n_1 \rightarrow n_{\text{final}}$
+    \item Pfad 2(else if Bedingung ist wahr.): $n_{\text{start}} \rightarrow n_1 \rightarrow n_2 \rightarrow n_{\text{final}}$
+    \item Pfad 3(keins von beidem ist wahr.): $n_{\text{start}} \rightarrow n_1 \rightarrow n_3 \rightarrow n_{\text{final}}$
+\end{itemize}
+  \item[c)] 
+    Testfall 1: \\
+    Eingabe: alter 17, mitglied false, student true.\\
+    Ausgabe: true\\
 
+    Testfall 2: \\
+    Eingabe: alter 25, mitglied true, student false. \\
+    Ausgabe: true \\
+
+    Testfall 3: \\
+    Eingabe: alter 20, mitglied false, student false \\
+    Ausgabe: false \\
+
+    Anweisungsüberdeckung und Zweigüberdeckung werden bei dieser Methode über die selbe minimale Menge an Testfällen erreicht.\\
+
+ \item[d)]
+    $n_{\text{start}} \rightarrow n_1 \rightarrow n_2 \rightarrow n_\text{final}$ ist ein theoretischer Pfad bei dem beide Bedinungen zutreffen. Dieser ist nicht ausführbar, da else if die zweite Bedingung nur dann Prüft, wenn die erste falsch ist. 
+\end{enumerate}
 % Nutze den \exercise{Aufgabenname} Befehl, um eine neue Aufgabe zu beginnen.
 % Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
 % Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
