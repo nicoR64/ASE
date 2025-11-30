@@ -301,35 +301,40 @@
 
 \newpage
 \exercise{Kontrollflussorientierter Test – Rabattberechnung}
-\begin{enumerate}
-  \setcounter{enumi}{1}
-  \begin{figure}[H]
+\begin{enumerate}[label=\alph*)]
+  \item ~\\
+   \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{./Tex-Graphics/EX03A31.png}
+    \includegraphics{Tex-Graphics/Aufgabe3a).jpg}
     \caption{Kontrollflussgraph}
     \label{fig:k1}
   \end{figure}
-  \item[b)]
-        \begin{itemize}
-          \item Pfad 1(if Bedingung ist wahr.): $n_{\text{start}} \rightarrow n_1 \rightarrow n_{\text{final}}$
-          \item Pfad 2(else if Bedingung ist wahr.): $n_{\text{start}} \rightarrow n_1 \rightarrow n_2 \rightarrow n_{\text{final}}$
-          \item Pfad 3(keins von beidem ist wahr.): $n_{\text{start}} \rightarrow n_1 \rightarrow n_3 \rightarrow n_{\text{final}}$
+  n1: Der Methodeneintritt (kann auch $n_{start}$ genannt werden) \\
+  n2: if (alter $<$ 18 $||$ student) \\
+  n3: Return true für den ersten Fall (ersten If-Block) \\
+  n4: (mitglied $\&\&$ alter $<$ 65) \\
+  n5: Else if und return true \\
+  n6: Return false für die gesamte Eingabe \\
+  n7: Austritt der Methode (kann auch $n_{final}$ genannt werden)
+  \item \begin{itemize}
+          \item Pfad 1 ((alter $<$ 18 $||$ student)  ist wahr):\\ n1 $\rightarrow$ n2 $\rightarrow$ n3 $\rightarrow$ n7
+          \item Pfad 2 ((mitglied $\&\&$ alter $<$ 65) ist wahr): \\n1 $\rightarrow$ n2 $\rightarrow$ n4 $\rightarrow$ n5 $\rightarrow$ n7
+          \item Pfad 3 (Beide If-Blöcke sind false): \\n1 $\rightarrow$ n2 $\rightarrow$ n4 $\rightarrow$ n6 $\rightarrow$ n7
         \end{itemize}
-  \item[c)]
-        Testfall 1: \\
-        Eingabe: alter 17, mitglied false, student true.\\
+  \item Testfall 1: \\
+        Eingabe: alter 17, mitglied false, student true. $\Rightarrow$ Pfad 1\\
         Ausgabe: true\\
+
         Testfall 2: \\
-        Eingabe: alter 25, mitglied true, student false. \\
+        Eingabe: alter 25, mitglied true, student false. $\Rightarrow$ Pfad 2\\
         Ausgabe: true \\
 
         Testfall 3: \\
-        Eingabe: alter 20, mitglied false, student false \\
+        Eingabe: alter 20, mitglied false, student false $\Rightarrow$ Pfad 3\\
         Ausgabe: false \\
 
         Anweisungsüberdeckung und Zweigüberdeckung werden bei dieser Methode über die selbe minimale Menge an Testfällen erreicht.\\
 
-  \item[d)]
-        $n_{\text{start}} \rightarrow n_1 \rightarrow n_2 \rightarrow n_\text{final}$ ist ein theoretischer Pfad bei dem beide Bedinungen zutreffen. Dieser ist nicht ausführbar, da else if die zweite Bedingung nur dann Prüft, wenn die erste falsch ist.
+  \item Die aufgelisteten Pfade aus Teilaufgabe b) können alle theoretisch ausgeführt werden. Eine jedoch mögliche Eingabe wie beispielsweise: alter = 17, student = true und mitglied = true, wird im 1. if-Block (alter $<$ 18 $||$ student) direkt akzeptiert und könnte nicht vom 2. Statement (mitglied $\&\&$ alter $<$ 65) akzeptiert werden, da dieser Block im Code nie betreten wird, da wie gesagt die erste if-Anweisung direkt akzeptiert. Somit würde hier der 1. Pfad akzeptieren und der 2. Pfad (der auch akzeptieren könnte) nicht.
 \end{enumerate}
 \end{document}
