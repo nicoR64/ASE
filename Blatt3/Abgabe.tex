@@ -317,8 +317,8 @@
   n6: Return false für die gesamte Eingabe \\
   n7: Austritt der Methode (kann auch $n_{final}$ genannt werden)
   \item \begin{itemize}
-          \item Pfad 1 ((alter $<$ 18 $||$ student)  ist wahr):\\ n1 $\rightarrow$ n2 $\rightarrow$ n3 $\rightarrow$ n7
-          \item Pfad 2 ((mitglied $\&\&$ alter $<$ 65) ist wahr): \\n1 $\rightarrow$ n2 $\rightarrow$ n4 $\rightarrow$ n5 $\rightarrow$ n7
+          \item Pfad 1 ((alter $<$ 18 $||$ student)  ist true):\\ n1 $\rightarrow$ n2 $\rightarrow$ n3 $\rightarrow$ n7
+          \item Pfad 2 ((alter $<$ 18 $||$ student) ist false und (mitglied $\&\&$ alter $<$ 65) ist true): \\n1 $\rightarrow$ n2 $\rightarrow$ n4 $\rightarrow$ n5 $\rightarrow$ n7
           \item Pfad 3 (Beide If-Blöcke sind false): \\n1 $\rightarrow$ n2 $\rightarrow$ n4 $\rightarrow$ n6 $\rightarrow$ n7
         \end{itemize}
   \item Testfall 1: \\
