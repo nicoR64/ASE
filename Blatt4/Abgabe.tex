@@ -1,0 +1,77 @@
+% LaTeX Template für Abgaben an der Universität Stuttgart
+% Autor: Sandro Speth
+% Bei Fragen: Sandro.Speth@iste.uni-stuttgart.de
+%-----------------------------------------------------------
+% Hauptmodul des Templates: Hier können andere Dateien eingebunden werden
+% oder Inhalte direkt rein geschrieben werden.
+% Kompiliere dieses Modul um eine PDF zu erzeugen.
+
+% Dokumentenart. Ersetze 12pt, falls die Schriftgröße anzupassen ist.
+\documentclass[12pt]{scrartcl}
+% Einbinden der Pakete, des Headers und der Formatierung.
+% Mit den \include und \input Befehlen können Dateien eingebunden werden:
+% \include: Fügt einen Seitenumbruch nach dem Text ein
+% \input: Fügt KEINEN Seitenumbruch nach dem Text ein
+\input{../assets/Packages.tex}
+\input{../assets/FormatAndHeader.tex}
+\hbadness=99999 % No fucking underfull hbox warning
+\hfuzz=9999pt % No fucking overfull hbox warning
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric}
+\renewcommand{\arraystretch}{1.5}
+\newcommand{\textarrow}[1]{%
+    \tikz[baseline, inner sep=0pt] {
+        % 1. Create a hidden node with the text to measure width
+        \node[anchor=south, font=\scriptsize, align=center, inner ysep=2pt] (txt) at (0,0) {#1};
+        % 2. Draw the arrow underneath it
+        \draw[->, >=Latex, thick, rounded corners] 
+             ($(txt.south west)$) -- ($(txt.south east) + (3mm, 0)$);
+    }%
+}
+
+\setcounter{exnum}{1} % Nummer der Aufgabe
+
+\begin{document}
+\input{../assets/Titelseite.tex} % Titelseite einbinden
+\section*{Integrationsteststrategien}
+\begin{enumerate}[label=\alph*)]
+  \item ~\\ \begin{tabular}{|c||c|c|c|c|c|}
+          \hline
+          \# & A                  & B                   & D                   & C                   & E                   \\
+          \hline\hline
+          1  & \textcolor{red}{A} & \textcolor{blue}{b} &                     & \textcolor{blue}{c} &                     \\
+          \hline
+          2  & A                  & \textcolor{red}{B}  & \textcolor{blue}{d} & \textcolor{blue}{c} & \textcolor{blue}{e} \\
+          \hline
+          3  & A                  & B                   & \textcolor{red}{D}  & \textcolor{blue}{c} & \textcolor{blue}{e} \\
+          \hline
+          4  & A                  & B                   & D                   & \textcolor{red}{C}  & \textcolor{blue}{e} \\
+          \hline
+          5  & A                  & B                   & D                   & C                   & \textcolor{red}{E}  \\
+          \hline
+        \end{tabular} \\\\
+        \underline{Legende:} \\
+        \textcolor{red}{Integrierte Komponente}, \textcolor{blue}{Platzhalter (Stubs)} \\ \\
+        \underline{Ausführliche Beschreibung:} \\
+        Da es Top-Down ist, fangen wir oben bei Web-UI (A) an. Diese Komponente wird integriert. Dadurch müssen wir zwei Stubs einfügen (Platzhalter). Einmal für B und einmal für C. Dann gehen wir weiter zu B. Hier wird dann B integriert und es müssen zwei weitere Stubs für D und E eingefügt werden. Danach wird D integriert, welches keine weiteren Auswirkungen hat. Danach wird C integriert, hier würde man nochmal ein Stub für E einfügen, dieser hat aber schon einen Stub, also brauchen wir nicht erneut einen. Zum Schluss wird E integriert, welches das Ende ist und auch keine weiteren Auswirkungen hat. Einen Treiber braucht man hier nicht, da z.B. B hier D und E aufrufen möchte, aber diese noch gar nicht integriert sind, und deshalb durch einen Platzhalter ersetzt werden, die so tun als wären sie z.B. D oder E. Ein Treiber wäre nur nötig wenn man z.B. E testen wollen würde, aber noch niemand der E überhaupt ausführen könnte. Siehe Teilaufgabe $b)$.
+  \item ~\\ \begin{tabular}{|c||c|c|c|c|c|}
+          \hline
+          \# & A                  & B                  & C                  & D                  & E                  \\
+          \hline\hline
+          1  &                    &                    &                    &                    & \textcolor{red}{E} \\
+          \hline
+          2  &                    &                    &                    & \textcolor{red}{D} & E                  \\
+          \hline
+          3  &                    &                    & \textcolor{red}{C} & D                  & E                  \\
+          \hline
+          4  &                    & \textcolor{red}{B} & C                  & D                  & E                  \\
+          \hline
+          5  & \textcolor{red}{A} & B                  & D                  & C                  & E                  \\
+          \hline
+        \end{tabular} \\\\
+         \underline{Legende:} \\
+        \textcolor{red}{Integrierte Komponente}\\ \\
+        \underline{Ausführliche Beschreibung:} \\
+        Hier fangen wir unten an, nämlich bei E. Wir integrieren E und brauchen für E einen Treiber, da B und C noch nicht existieren und wir aber E aufrufen wollen. Danach integrieren wir D, hierfür brauchen wir auch einen Treiber, da B noch nicht existiert. Danach integrieren wir C, hierfür brauchen wir auch wieder einen Treiber, da A noch nicht existiert. Als nächstes integrieren wir B, hierfür brauchen wir auch einen Treiber, da A noch nicht existiert. Zum Schluss integrieren wir A, welches das Ende ist und keinen Treiber mehr braucht, da es ganz oben in der Hierarchie ist. Stubs werden hier nicht benötigt, da immer die abhängigen Komponenten schon integriert sind, wenn eine Komponente integriert wird. 
+  \item Wir würden eine Bottom-Up-Strategie (BUS) benutzen. D gilt als technisch anfällig, die BUS beginnt mit den untersten Modulen. Komponente D würde also sehr weit am Anfang getestet werden. Man könnte hier sogar schon in Schritt 1 anfangen D zu testen und danach erst E ausführen. Fehler werden also hier am frühesten gefunden. Bei der Top-Down-Strategie (TDS) wäre D erst sehr spät an der Reihe, was widerrum das Risiko erhöht. Wegen der Testumgebung, also A ist massiv im Verzug, ist es für die TDS die Komponente A zwingend als Startpunkt erforderlich, was schlecht ist, da man ohne A nicht mit der Integration überhaupt beginnen kann. BUS hingegen, braucht A erst sehr spät (nämlich im letzten Schritt). Die Entwicklung und Integration vom Backend kann also einfach wietergehen.
+\end{enumerate}
+\end{document}
