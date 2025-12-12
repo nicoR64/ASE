@@ -149,7 +149,24 @@
           M & = E + 1 \\
           M & = 3 + 1 = 4
         \end{align*}
-  \item Keiner aus unserer Gruppe benutzt Eclipse deshalb haben wir das Tool MetricsReloaded in IntelliJ benutzt. 
+        \item Wir haben uns hier für diese Teilaufgabe für das Plugin Checkstyle in IntelliJ entschieden. Zudem haben wir für die Configuration Files Google Checks verwendet wie man im nachfolgenden Screenshot entnehmen kann. Nachdem wir das Checkstyle Plugin laufen lassen haben, sind insgesamt 116 Warnungen aufgetreten. Man kann hier leider nicht nach Metriken und Hotspots sortieren oder filtern, deshalb haben wir uns alle Meldungen angeschaut und die relevantesten für diese Teilaufgabe herausgesucht und zusammengefasst. \\ \\
+        Man kann schon mal direkt sagen dass die Code-Qualität nicht im akzeptablen Bereich liegt. Es ist sehr offensichtlich dass so viele Meldungen nicht akzeptabel sind. Es gibt massive Verletzungen der Coding-Standards von Google Checks welche wir verwendet haben. Falsche Einrückung, fehlende Dokumentation und Import-Fehler. 
+        \begin{center}
+        \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-116-Warnings.jpg}
+        \end{center}
+        \underline{1. Hotsport: Einrückungen}\\
+        \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-fire.jpg}
+        Die Liste zeigt sehr hohe Anzahl an Einrückungstiefen, z.B. in Zeile 212, 214, 215 usw.. Das korreliert natürlich mit der Verschachtelungstiefe und das weißt auch auf eine hohe Komplexität hin (Das wir nochmal in Teilaufgabe c) besprochen.) In der Methode fire() wird in den zuvor aufgeführten Zeilen massive Indentation Warnungen ausgegeben. Checkstyle erwartet hier eine Einrückung von 4, 6 oder 8 aber findet 8, 12 oder 16 vor. Das ist genau Nesting Depth welche zu hoch ist.  \\\\
+        \underline{2. Hotsport: Fehlende Dokumentation}\\
+        \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-update.jpg} \\\\\\
+        Auch hier werden zahlreiche Warnungen bezüglich der Einrückungstiefe ausgegeben. Erwartet 10, 12, 14 und findet 16 oder 20 vor. Auch hier ist die Verschachtelungstiefe zu hoch. Zudem ist eine Tiefe von 20 für eine Methode sehr hoch was genau auf die Verschachtelung von if-else-Blöcken hinweist. \\
+      
+        \underline{3. Weitere Warnungen:}\\
+        1. Javadoc-Zusammenfassung fehlt $\rightarrow$ zeigt dass hier nicht gut dokumentiert wurde widerrum die Wartbarkeit und Lesbarkeit verschlechtert. (Zeile 148 ff.)\\
+        2. Vor Javadoc tag '@throws' sollte eine Leerzeile stehen. (Zeile 208)\\
+        3. Falsche lexikographische Reihenfolge des Imports (Zeile 17) \\
+        4. Zusätzliche Trennung der Importgruppe (Zeile 14)
+
   \item \underline{\textbf{Maßnahme 1:} Extract Method} \\
         Hier sollte eigentlich der Schaltvorgang des Bewegen der Token in einer eigenen privaten Methode ausgelagert werden. Also z.B. moveTokens(). fire() sollte auch dem Single-Responsibility Principle folgen, sie sollte also den Ablauf steuern also locking $\rightarrow$ Action $\rightarrow$ Unlocking machen, aber nicht die Details der Token-Manipulation auch noch selbst implementieren. Das erhöht z.B. die Lesbarkeit und Wartbarkeit des Codes. \\
         Die Methode fire() prüft nämlihc Bedingungen, benachrichtigt den Observer, iteriert über eingehende Stellen (also Token entfernen), iteriert über ausgehende Stellen (Token hinzufügen) und entsperrt wieder. Also vermischt die Methode fire() aktuell die Steuerung des Ablaufs mit der eigentlichen Logik (Token Bewegung) Man müsste also den Code-Block innerhalb der if-Abfrage in Zeile 10 vor allem die beiden for-Schleifen in eine eigene Methode auslagern (z.B moveTokens()). \\ \\
