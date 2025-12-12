@@ -68,10 +68,98 @@
           5  & \textcolor{red}{A} & B                  & D                  & C                  & E                  \\
           \hline
         \end{tabular} \\\\
-         \underline{Legende:} \\
+        \underline{Legende:} \\
         \textcolor{red}{Integrierte Komponente}\\ \\
         \underline{Ausführliche Beschreibung:} \\
-        Hier fangen wir unten an, nämlich bei E. Wir integrieren E und brauchen für E einen Treiber, da B und C noch nicht existieren und wir aber E aufrufen wollen. Danach integrieren wir D, hierfür brauchen wir auch einen Treiber, da B noch nicht existiert. Danach integrieren wir C, hierfür brauchen wir auch wieder einen Treiber, da A noch nicht existiert. Als nächstes integrieren wir B, hierfür brauchen wir auch einen Treiber, da A noch nicht existiert. Zum Schluss integrieren wir A, welches das Ende ist und keinen Treiber mehr braucht, da es ganz oben in der Hierarchie ist. Stubs werden hier nicht benötigt, da immer die abhängigen Komponenten schon integriert sind, wenn eine Komponente integriert wird. 
+        Hier fangen wir unten an, nämlich bei E. Wir integrieren E und brauchen für E einen Treiber, da B und C noch nicht existieren und wir aber E aufrufen wollen. Danach integrieren wir D, hierfür brauchen wir auch einen Treiber, da B noch nicht existiert. Danach integrieren wir C, hierfür brauchen wir auch wieder einen Treiber, da A noch nicht existiert. Als nächstes integrieren wir B, hierfür brauchen wir auch einen Treiber, da A noch nicht existiert. Zum Schluss integrieren wir A, welches das Ende ist und keinen Treiber mehr braucht, da es ganz oben in der Hierarchie ist. Stubs werden hier nicht benötigt, da immer die abhängigen Komponenten schon integriert sind, wenn eine Komponente integriert wird.
   \item Wir würden eine Bottom-Up-Strategie (BUS) benutzen. D gilt als technisch anfällig, die BUS beginnt mit den untersten Modulen. Komponente D würde also sehr weit am Anfang getestet werden. Man könnte hier sogar schon in Schritt 1 anfangen D zu testen und danach erst E ausführen. Fehler werden also hier am frühesten gefunden. Bei der Top-Down-Strategie (TDS) wäre D erst sehr spät an der Reihe, was widerrum das Risiko erhöht. Wegen der Testumgebung, also A ist massiv im Verzug, ist es für die TDS die Komponente A zwingend als Startpunkt erforderlich, was schlecht ist, da man ohne A nicht mit der Integration überhaupt beginnen kann. BUS hingegen, braucht A erst sehr spät (nämlich im letzten Schritt). Die Entwicklung und Integration vom Backend kann also einfach wietergehen.
+\end{enumerate}
+\section*{Statische Code-Analyse und Datenflussanomalien}
+
+
+
+\newpage
+\section*{Code Metriken in der Praxis}
+\begin{enumerate}[label=\alph*)]
+  \item \begin{lstlisting}
+    /**
+    * An listener which listens for state changes in any of the incoming
+    * places. Used to signal when to fire this transition.
+    */
+    private final Observer incomingPlacesObserver = new Observer() {
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.util.Observer#update(java.util.Observable,
+         * java.lang.Object)
+         */
+        public void update(final Observable observable, final Object arg) {
+            TokenCountChangedEvent event = (TokenCountChangedEvent) arg;
+            int newNoOfOccupiedPlaces;
+            if (event.placeBecameEmpty()) {
+                newNoOfOccupiedPlaces = noOfOccupiedIncomingPlaces
+                        .decrementAndGet();
+            } else {
+                if (event.placeBecameOccupied()) {
+                  newNoOfOccupiedPlaces = noOfOccupiedIncomingPlaces
+                            .incrementAndGet();
+                            } else {
+                    newNoOfOccupiedPlaces = noOfOccupiedIncomingPlaces.get();
+                    }
+                    }
+                    unblockIfEnoughTokensAvailable(
+                      newNoOfOccupiedPlaces);
+        }
+    };
+\end{lstlisting}
+        Hier sieht man schnell dass es insgesamt 2 If-Blöcke gibt. Einmal in Zeile 16 und einmal in Zeile 20. Wir Starten mit dem Startwert 1, hier weden jetzt die 2 möglichen Pfade der If-Blöcke hinzugefügt mit jeweils ++. Somit entsteht folgende Berechnung für die zyklomatische Komplexität $M$ mit Entscheidungswegen $E$:
+        \begin{align*}
+          M & = E + 1 \\
+          M & = 2 + 1 = 3
+        \end{align*}
+        \newpage
+        \begin{lstlisting}
+  /**
+     * Tries to fire this transition. It blocks until enough tokens are
+     * available and then tries to grab all locks of all incoming places. If
+     * successful, checks again whether it is still allowed to fire. If so, it
+     * fires.
+     * @throws InterruptedException thrown if an interrupt was requested
+     */
+     private void fire() throws InterruptedException {
+        blockUntilEnoughTokensAvailable();
+        if (lockAndCheckIncomingPlaces()) {
+            setChanged();
+            notifyObservers(new TransitionStartsToFireEvent());
+            for (Place incommingPlace : incomingPlaces) {
+              incommingPlace.decrementTokenCount();
+            }
+            for (Place outgoingPlace : outgoingPlaces) {
+              outgoingPlace.incrementTokenCount();
+              }
+              setChanged();
+              notifyObservers(new TransitionEndsFireEvent());
+              unlockLockedPlaces(incomingPlaces);
+              }
+    }
+  \end{lstlisting}
+        Auch hier sieht man schnell dass es einn If-Block gibt in Zeile 10. In diesem werden dann nochmals zwei for-Schleifen (Zeile 13 und 16) eingebaut was die Komplexität erhöht. Diese muss man beide mit einrechnen also auch jeweils ++. Somit entsteht folgende Berechnung für die zyklomatische Komplexität $M$ mit Entscheidungswegen $E$:
+        \begin{align*}
+          M & = E + 1 \\
+          M & = 3 + 1 = 4
+        \end{align*}
+  \item Keiner aus unserer Gruppe benutzt Eclipse deshalb haben wir das Tool MetricsReloaded in IntelliJ benutzt. 
+  \item \underline{\textbf{Maßnahme 1:} Extract Method} \\
+        Hier sollte eigentlich der Schaltvorgang des Bewegen der Token in einer eigenen privaten Methode ausgelagert werden. Also z.B. moveTokens(). fire() sollte auch dem Single-Responsibility Principle folgen, sie sollte also den Ablauf steuern also locking $\rightarrow$ Action $\rightarrow$ Unlocking machen, aber nicht die Details der Token-Manipulation auch noch selbst implementieren. Das erhöht z.B. die Lesbarkeit und Wartbarkeit des Codes. \\
+        Die Methode fire() prüft nämlihc Bedingungen, benachrichtigt den Observer, iteriert über eingehende Stellen (also Token entfernen), iteriert über ausgehende Stellen (Token hinzufügen) und entsperrt wieder. Also vermischt die Methode fire() aktuell die Steuerung des Ablaufs mit der eigentlichen Logik (Token Bewegung) Man müsste also den Code-Block innerhalb der if-Abfrage in Zeile 10 vor allem die beiden for-Schleifen in eine eigene Methode auslagern (z.B moveTokens()). \\ \\
+        \underline{Auswirkungen:} \\
+        Zyklomatische Komplexität würde hierbei sinken. Beispielsweise von fire(), beide for-Schleifen würden hier in eine eigene Methode ausgelagert werden. Wir würden hierbei von unseren ursprüunglichen zyklomatischen Wert von 4 auf 2 heruntersetzen. Da hier nur noch neben dem Startwert die if-Bedingung übrig bleibt. Zudem würden die Lines of Code reduziert werden, dadurch würde sich natürlich auch die Lesbarkeit und Wartbarkeit verbessern. \\ \\
+        \underline{\textbf{Maßnahme 2:} Logik vereinfachen - Verschachtelung auflösen:} \\
+        update() enthält viele unnötige Verschachtelungen (nested ifs). Würden wir hier $"$else if$"$ verwenden, könnten wir die Verschachtelung reduzieren. Dies würde die Lesbarkeit und Wartbarkeit verbessern. Verschachtelte ifs sind schlecht zum lesen und schwer zu warten, vor allem wenn es immer mehr werden. Flache Strukturen hingegen sind übersichtlicher und leichter zu verstehen. Was noch besser wäre, wäre dass man die Berechnung von $"$newNoOfOccupiedPlaces$"$ auch auslagert.  \\ \\
+        \underline{Auswirkungen:} \\
+        Nesting depth: Die maximale Verschachtelungstiefe würde sich reduzieren, wenn wir auslagern. Die Zyklomatische Komplexität würde sich hier auch ebenfalls reduzieren, da weniger Pfade durch die Methode führen. Die Zyklomatische Komplexität von update() würde sich von 3 auf 1 reduzieren, da wir nur noch den Startwert hätten, da wir die if und fors ausgelagert hätten.  \\\\
+
+        Was uns auch noch aufgefallen ist, ist dass $"$incomming$"$ in der Methode fire() in Zeile 13 und 14 falsch geschrieben ist. Das kann später Auswirkungen auf die Wartbarkeit haben, da man gegebenfalls nicht mehr über $"$crtl + F$"$ die Variable finden kann. Eine konsistente Benennung ist essenziell für die Wartbarkeit, das hätte zwar aktuell keine Auswirkungen auf die Metriken, aber könnte wie gesagt zu Problemen führen.
 \end{enumerate}
 \end{document}
