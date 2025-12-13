@@ -74,9 +74,82 @@
         Hier fangen wir unten an, nämlich bei E. Wir integrieren E und brauchen für E einen Treiber, da B und C noch nicht existieren und wir aber E aufrufen wollen. Danach integrieren wir D, hierfür brauchen wir auch einen Treiber, da B noch nicht existiert. Danach integrieren wir C, hierfür brauchen wir auch wieder einen Treiber, da A noch nicht existiert. Als nächstes integrieren wir B, hierfür brauchen wir auch einen Treiber, da A noch nicht existiert. Zum Schluss integrieren wir A, welches das Ende ist und keinen Treiber mehr braucht, da es ganz oben in der Hierarchie ist. Stubs werden hier nicht benötigt, da immer die abhängigen Komponenten schon integriert sind, wenn eine Komponente integriert wird.
   \item Wir würden eine Bottom-Up-Strategie (BUS) benutzen. D gilt als technisch anfällig, die BUS beginnt mit den untersten Modulen. Komponente D würde also sehr weit am Anfang getestet werden. Man könnte hier sogar schon in Schritt 1 anfangen D zu testen und danach erst E ausführen. Fehler werden also hier am frühesten gefunden. Bei der Top-Down-Strategie (TDS) wäre D erst sehr spät an der Reihe, was widerrum das Risiko erhöht. Wegen der Testumgebung, also A ist massiv im Verzug, ist es für die TDS die Komponente A zwingend als Startpunkt erforderlich, was schlecht ist, da man ohne A nicht mit der Integration überhaupt beginnen kann. BUS hingegen, braucht A erst sehr spät (nämlich im letzten Schritt). Die Entwicklung und Integration vom Backend kann also einfach wietergehen.
 \end{enumerate}
+
+\newpage
 \section*{Statische Code-Analyse und Datenflussanomalien}
+\begin{enumerate}[label=\alph*)]
+  \item ~\\ \begin{tabular}{|c|c|c c c c|}
+          \hline 
+          \diagbox{Zeile}{Pfad}
+          & $n<0: n_{1}n_{5}n_{8}n_{13}$ \\
+          \hline \hline
+          1     & u        \\
+          \hline 
+          5     & d        \\
+          \hline
+          8     & d        \\
+          \hline
+          10     &         \\
+          \hline
+          13     & r       \\
+          \hline
+        \end{tabular} \\\\
+        \begin{tabular}{|c|c|c c c c|}
+          \hline 
+          \diagbox{Zeile}{Pfad}
+          & $n=0: n_{1}n_{8}n_{13}$ \\
+          \hline \hline
+          1     & u        \\
+          \hline 
+          5     &          \\
+          \hline
+          8     & d        \\
+          \hline
+          10     &         \\
+          \hline
+          13     & r       \\
+          \hline
+        \end{tabular} \\\\
+        \begin{tabular}{|c|c|c c c c|}
+          \hline 
+          \diagbox{Zeile}{Pfad}
+          & $n=1: n_{1}n_{8}n_{10}n_{13}$ \\
+          \hline \hline
+          1     & u       \\
+          \hline 
+          5     &         \\
+          \hline
+          8     & d        \\
+          \hline
+          10     & r,d     \\
+          \hline
+          13     & r       \\
+          \hline
+        \end{tabular} \\\\
+        \begin{tabular}{|c|c|c c c c|}
+          \hline 
+          \diagbox{Zeile}{Pfad}
+          & $n=2: n_{1}n_{8}n_{10}n_{10}n_{13}$ \\
+          \hline \hline
+          1     & u       \\
+          \hline 
+          5     &         \\
+          \hline
+          8     & d        \\
+          \hline
+          10     & r,d     \\
+          \hline
+          10     & r,d     \\
+          \hline
+          13     & r       \\
+          \hline
+        \end{tabular} \\\\
+        \underline{Anomalie:} \\
+        Im ersten Pfad entsteht durch die Zeilen 5 und 8 eine d-d Anomalie. Beide Zeilen weißen der Variable einen Wert zu ohne dass diese zwischen den Zeilen referenziert wurde.
 
-
+  \item Die gefundene d-d Anomalie aus a führt für die Berechnung der Fakultät zu keinem Fehler. So ist sie erstmal nur kosmetischer Natur. Jedoch ist die Fakultät für Zahlen kleiner Null nicht definiert. Die Ausgabe eines Wertes ist somit nie richtig ob dieser Wert nun Eins oder Null ist. Dies hängt aber nicht mit der Anomalie zusammen.
+  \item Der Input von n= -1 hat die erwartete Ausgabe von ergebnis = 0. Ausgegeben wird aber  ergebnis = 1. Da die Precondition nicht geprüft wird müssen wir annehmen das es in diesem Programm sinvoll ist bei der Eingabe einer negativen Zahl das Ergebnis auf 0 zu setzen. In diesem Fall führt die Anomalie zu einem Fehler im Programm und ist nicht komsmetischer Natur.
+\end{enumerate}
 
 \newpage
 \section*{Code Metriken in der Praxis}
