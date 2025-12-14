@@ -75,7 +75,6 @@
   \item Wir würden eine Bottom-Up-Strategie (BUS) benutzen. D gilt als technisch anfällig, die BUS beginnt mit den untersten Modulen. Komponente D würde also sehr weit am Anfang getestet werden. Man könnte hier sogar schon in Schritt 1 anfangen D zu testen und danach erst E ausführen. Fehler werden also hier am frühesten gefunden. Bei der Top-Down-Strategie (TDS) wäre D erst sehr spät an der Reihe, was widerrum das Risiko erhöht. Wegen der Testumgebung, also A ist massiv im Verzug, ist es für die TDS die Komponente A zwingend als Startpunkt erforderlich, was schlecht ist, da man ohne A nicht mit der Integration überhaupt beginnen kann. BUS hingegen, braucht A erst sehr spät (nämlich im letzten Schritt). Die Entwicklung und Integration vom Backend kann also einfach wietergehen.
 \end{enumerate}
 
-\newpage
 \section*{Statische Code-Analyse und Datenflussanomalien}
 \begin{enumerate}[label=\alph*)]
   \item ~\\ \begin{tabular}{cc}
@@ -190,7 +189,6 @@
   \item Die gefundene $d-d$ Anomalie aus $a)$ führt für die Berechnung der Fakultät zu einem Bug. In Zeile 5 wird $ergebnis$ innerhalb des if-Blocks auf 0 gesetzt. Das ist wahrscheinlich von dem Entwickler so gewollt um negative Inputs so immer auf 0 zu setzen. Jedoch wird in Zeile 8 $ergebnis$ bedingungslos auf 1 gesetzt. D.h. der Wert der vorher beabsichtigt vom Entwickler auf 0 gesetzt wurde, wird einfach immer überschrieben. Das führt dazu, dass die vom Entwickler eingebaute Sonderbehandlung der negativen Inputs einfach entfällt.
   \item Der Input $-1$ führt mit der gefundenen $d-d$ Anomalie aus $a)$ zu einem grundlegenden Fehler. Die Fakultätsfunktion ist nämlich für negative Inputs nicht definiert. In Zeile 4 hat der Entwickler eindeutig eine solche Abfrage eingebaut und auch dann weiter behandelt in Zeile 5 und diese auf 0 gesetzt. Wie vorher schon beschrieben wird dann in Zeile 8 der Wert für $ergebnis$ immer auf 1 gesetzt was mathematisch und systematisch nicht korrekt ist, da die Schleife für negative Inputs nicht betreten wird. Das Programm ignoriert also seine eigene Logik und Fehlerbehandlung für negative Inputs komplett und gibt immer 1 aus, obwohl die Code-Intention in Zeile 5 0 erwarten würde. Somit ist das Ergebnis für den Input $-1$ mit der Anomalie 1, was falsch ist. Korrekt wäre hier 0 oder eine Exception, damit man damit richtig weiterarbeiten kann. Das hat vor allem Auswirkungen auf die Zuverlässigkeit und Korrektheit des Programms und auch für die weiterführenden Programme die diese Funktion aufrufen und dann auf einer falschen Grundlage weiterarbeiten. 
   \end{enumerate}
-\newpage
 \section*{Code Metriken in der Praxis}
 \begin{enumerate}[label=\alph*)]
   \item \begin{lstlisting}
@@ -230,7 +228,6 @@
           M & = E + 1     \\
           M & = 2 + 1 = 3
         \end{align*}
-        \newpage
         \begin{lstlisting}
   /**
      * Tries to fire this transition. It blocks until enough tokens are
