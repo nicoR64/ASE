@@ -74,78 +74,10 @@
         Hier fangen wir unten an, nämlich bei E. Wir integrieren E und brauchen für E einen Treiber, da B und C noch nicht existieren und wir aber E aufrufen wollen. Danach integrieren wir D, hierfür brauchen wir auch einen Treiber, da B noch nicht existiert. Danach integrieren wir C, hierfür brauchen wir auch wieder einen Treiber, da A noch nicht existiert. Als nächstes integrieren wir B, hierfür brauchen wir auch einen Treiber, da A noch nicht existiert. Zum Schluss integrieren wir A, welches das Ende ist und keinen Treiber mehr braucht, da es ganz oben in der Hierarchie ist. Stubs werden hier nicht benötigt, da immer die abhängigen Komponenten schon integriert sind, wenn eine Komponente integriert wird.
   \item Wir würden eine Bottom-Up-Strategie (BUS) benutzen. D gilt als technisch anfällig, die BUS beginnt mit den untersten Modulen. Komponente D würde also sehr weit am Anfang getestet werden. Man könnte hier sogar schon in Schritt 1 anfangen D zu testen und danach erst E ausführen. Fehler werden also hier am frühesten gefunden. Bei der Top-Down-Strategie (TDS) wäre D erst sehr spät an der Reihe, was widerrum das Risiko erhöht. Wegen der Testumgebung, also A ist massiv im Verzug, ist es für die TDS die Komponente A zwingend als Startpunkt erforderlich, was schlecht ist, da man ohne A nicht mit der Integration überhaupt beginnen kann. BUS hingegen, braucht A erst sehr spät (nämlich im letzten Schritt). Die Entwicklung und Integration vom Backend kann also einfach wietergehen.
 \end{enumerate}
-
+\newpage
 \section*{Statische Code-Analyse und Datenflussanomalien}
 \begin{enumerate}[label=\alph*)]
-  \item ~\\ \begin{tabular}{cc}
-          \begin{tabular}{|c|c|c c c c|}
-            \hline
-            \diagbox{Zeile}{Pfad}
-               & $n<0: n_{1}n_{5}n_{8}n_{13}$ \\
-            \hline \hline
-            1  & u                            \\
-            \hline
-            5  & d                            \\
-            \hline
-            8  & d                            \\
-            \hline
-            10 &                              \\
-            \hline
-            13 & r                            \\
-            \hline
-          \end{tabular}  &
-          \begin{tabular}{|c|c|c c c c|}
-            \hline
-            \diagbox{Zeile}{Pfad}
-               & $n=0: n_{1}n_{8}n_{13}$ \\
-            \hline \hline
-            1  & u                       \\
-            \hline
-            5  &                         \\
-            \hline
-            8  & d                       \\
-            \hline
-            10 &                         \\
-            \hline
-            13 & r                       \\
-            \hline
-          \end{tabular}       \\\\
-          \begin{tabular}{|c|c|c c c c|}
-            \hline
-            \diagbox{Zeile}{Pfad}
-               & $n=1: n_{1}n_{8}n_{10}n_{13}$ \\
-            \hline \hline
-            1  & u                             \\
-            \hline
-            5  &                               \\
-            \hline
-            8  & d                             \\
-            \hline
-            10 & r,d                           \\
-            \hline
-            13 & r                             \\
-            \hline
-          \end{tabular} &
-          \begin{tabular}{|c|c|c c c c|}
-            \hline
-            \diagbox{Zeile}{Pfad}
-               & $n=2: n_{1}n_{8}n_{10}n_{10}n_{13}$ \\
-            \hline \hline
-            1  & u                                   \\
-            \hline
-            5  &                                     \\
-            \hline
-            8  & d                                   \\
-            \hline
-            10 & r,d                                 \\
-            \hline
-            10 & r,d                                 \\
-            \hline
-            13 & r                                   \\
-            \hline
-          \end{tabular}
-        \end{tabular} \\\\
-        Wenn wir jetzt unsere Ergebnisse zusammentragen kommen wir auf folgende Tabelle die uns die Analyse für die Variable $ergebnis$ zeigt: \\
+  \item ~\\           
         \begin{tabular}{|c|c|c|p{8cm}|}
           \hline
           Zeile & Aktion auf $ergebnis$ & Status nach Zeile & Anmerkung                                      \\
@@ -263,10 +195,10 @@
         \begin{center}
           \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-116-Warnings.jpg}
         \end{center}
-        \underline{1. Hotsport: Einrückungen}\\
+        \underline{1. Hotspot: Einrückungen}\\
         \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-fire.jpg}
         Die Liste zeigt sehr hohe Anzahl an Einrückungstiefen, z.B. in Zeile 212, 214, 215 usw.. Das korreliert natürlich mit der Verschachtelungstiefe und das weißt auch auf eine hohe Komplexität hin (Das wir nochmal in Teilaufgabe c) besprochen.) In der Methode fire() wird in den zuvor aufgeführten Zeilen massive Indentation Warnungen ausgegeben. Checkstyle erwartet hier eine Einrückung von 4, 6 oder 8 aber findet 8, 12 oder 16 vor. Das ist genau Nesting Depth welche zu hoch ist.  \\\\
-        \underline{2. Hotsport: Fehlende Dokumentation}\\
+        \underline{2. Hotspot: Fehlende Dokumentation}\\
         \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-update.jpg} \\\\\\
         Auch hier werden zahlreiche Warnungen bezüglich der Einrückungstiefe ausgegeben. Erwartet 10, 12, 14 und findet 16 oder 20 vor. Auch hier ist die Verschachtelungstiefe zu hoch. Zudem ist eine Tiefe von 20 für eine Methode sehr hoch was genau auf die Verschachtelung von if-else-Blöcken hinweist. \\
 
