@@ -78,79 +78,118 @@
 \newpage
 \section*{Statische Code-Analyse und Datenflussanomalien}
 \begin{enumerate}[label=\alph*)]
-  \item ~\\ \begin{tabular}{|c|c|c c c c|}
-          \hline 
-          \diagbox{Zeile}{Pfad}
-          & $n<0: n_{1}n_{5}n_{8}n_{13}$ \\
-          \hline \hline
-          1     & u        \\
-          \hline 
-          5     & d        \\
-          \hline
-          8     & d        \\
-          \hline
-          10     &         \\
-          \hline
-          13     & r       \\
-          \hline
+  \item ~\\ \begin{tabular}{cc}
+          \begin{tabular}{|c|c|c c c c|}
+            \hline
+            \diagbox{Zeile}{Pfad}
+               & $n<0: n_{1}n_{5}n_{8}n_{13}$ \\
+            \hline \hline
+            1  & u                            \\
+            \hline
+            5  & d                            \\
+            \hline
+            8  & d                            \\
+            \hline
+            10 &                              \\
+            \hline
+            13 & r                            \\
+            \hline
+          \end{tabular}  &
+          \begin{tabular}{|c|c|c c c c|}
+            \hline
+            \diagbox{Zeile}{Pfad}
+               & $n=0: n_{1}n_{8}n_{13}$ \\
+            \hline \hline
+            1  & u                       \\
+            \hline
+            5  &                         \\
+            \hline
+            8  & d                       \\
+            \hline
+            10 &                         \\
+            \hline
+            13 & r                       \\
+            \hline
+          \end{tabular}       \\\\
+          \begin{tabular}{|c|c|c c c c|}
+            \hline
+            \diagbox{Zeile}{Pfad}
+               & $n=1: n_{1}n_{8}n_{10}n_{13}$ \\
+            \hline \hline
+            1  & u                             \\
+            \hline
+            5  &                               \\
+            \hline
+            8  & d                             \\
+            \hline
+            10 & r,d                           \\
+            \hline
+            13 & r                             \\
+            \hline
+          \end{tabular} &
+          \begin{tabular}{|c|c|c c c c|}
+            \hline
+            \diagbox{Zeile}{Pfad}
+               & $n=2: n_{1}n_{8}n_{10}n_{10}n_{13}$ \\
+            \hline \hline
+            1  & u                                   \\
+            \hline
+            5  &                                     \\
+            \hline
+            8  & d                                   \\
+            \hline
+            10 & r,d                                 \\
+            \hline
+            10 & r,d                                 \\
+            \hline
+            13 & r                                   \\
+            \hline
+          \end{tabular}
         \end{tabular} \\\\
-        \begin{tabular}{|c|c|c c c c|}
-          \hline 
-          \diagbox{Zeile}{Pfad}
-          & $n=0: n_{1}n_{8}n_{13}$ \\
+        Wenn wir jetzt unsere Ergebnisse zusammentragen kommen wir auf folgende Tabelle die uns die Analyse für die Variable $ergebnis$ zeigt: \\
+        \begin{tabular}{|c|c|c|p{8cm}|}
+          \hline
+          Zeile & Aktion auf $ergebnis$ & Status nach Zeile & Anmerkung                                      \\
           \hline \hline
-          1     & u        \\
-          \hline 
-          5     &          \\
+          START & -                     & u                 & Startzustand alle Variablen auf u              \\
           \hline
-          8     & d        \\
+          1     & -                     & u                 & $ergebnis$ nicht betroffen. Import von $n$                    \\
           \hline
-          10     &         \\
+          2     & d                     & d                 & Deklaration in Java für Primitive mit Wert = 0 \\
           \hline
-          13     & r       \\
+          3     & -                     & d                 & $ergebnis$ nicht betroffen                     \\
           \hline
-        \end{tabular} \\\\
-        \begin{tabular}{|c|c|c c c c|}
-          \hline 
-          \diagbox{Zeile}{Pfad}
-          & $n=1: n_{1}n_{8}n_{10}n_{13}$ \\
-          \hline \hline
-          1     & u       \\
-          \hline 
-          5     &         \\
+          4     & -                     & d                 & $ergebnis$ nicht betroffen                     \\
           \hline
-          8     & d        \\
+          5     & d                     & d                 & Erste Definition, $ergebnis$ bleibt bei Wert 0 \\
           \hline
-          10     & r,d     \\
+          6     & -                     & d                 & $ergebnis$ nicht betroffen                     \\
           \hline
-          13     & r       \\
+          7     & -                     & d                 & $ergebnis$ nicht betroffen                     \\
           \hline
-        \end{tabular} \\\\
-        \begin{tabular}{|c|c|c c c c|}
-          \hline 
-          \diagbox{Zeile}{Pfad}
-          & $n=2: n_{1}n_{8}n_{10}n_{10}n_{13}$ \\
-          \hline \hline
-          1     & u       \\
-          \hline 
-          5     &         \\
+          8     & d                     & d                 & Zweite Definition, $ergebnis$ erhält Wert 1    \\
           \hline
-          8     & d        \\
+          9     & -                     & d                 & $ergebnis$ nicht betroffen                     \\
           \hline
-          10     & r,d     \\
+          10    & r, d                  & d                 & $ergebnis$ wird gelesen und neu zugewiesen     \\
           \hline
-          10     & r,d     \\
+          11    & -                     & d                 & $ergebnis$ nicht betroffen                     \\
           \hline
-          13     & r       \\
+          12    & -                     & d                 & $ergebnis$ nicht betroffen                     \\
+          \hline
+          13    & r                     & d                 & Referenzierung, $ergebnis$ Wert wird gelesen   \\
+          \hline
+          14    & -                     & d                 & $ergebnis$ nicht betroffen                     \\
+          \hline
+          END   & -                     & u                 & Out of scope deshalb $ergebnis$ = u \\
           \hline
         \end{tabular} \\\\
         \underline{Anomalie:} \\
-        Im ersten Pfad entsteht durch die Zeilen 5 und 8 eine d-d Anomalie. Beide Zeilen weißen der Variable einen Wert zu ohne dass diese zwischen den Zeilen referenziert wurde.
+        Im ersten Pfad also der Pfad für $n~<~0$ entsteht durch die Zeilen 5 (erstes $d$) und 8 (zweited $d$ ohne ein $r$ dazwischen) eine $d-d$ Anomalie. Beide Zeilen weisen der Variable einen Wert zu, ohne dass diese zwischen den Zeilen referenziert wurden.
 
-  \item Die gefundene d-d Anomalie aus a führt für die Berechnung der Fakultät zu keinem Fehler. So ist sie erstmal nur kosmetischer Natur. Jedoch ist die Fakultät für Zahlen kleiner Null nicht definiert. Die Ausgabe eines Wertes ist somit nie richtig ob dieser Wert nun Eins oder Null ist. Dies hängt aber nicht mit der Anomalie zusammen.
-  \item Der Input von n= -1 hat die erwartete Ausgabe von ergebnis = 0. Ausgegeben wird aber  ergebnis = 1. Da die Precondition nicht geprüft wird müssen wir annehmen das es in diesem Programm sinvoll ist bei der Eingabe einer negativen Zahl das Ergebnis auf 0 zu setzen. In diesem Fall führt die Anomalie zu einem Fehler im Programm und ist nicht komsmetischer Natur.
-\end{enumerate}
-
+  \item Die gefundene $d-d$ Anomalie aus $a)$ führt für die Berechnung der Fakultät zu einem Bug. In Zeile 5 wird $ergebnis$ innerhalb des if-Blocks auf 0 gesetzt. Das ist wahrscheinlich von dem Entwickler so gewollt um negative Inputs so immer auf 0 zu setzen. Jedoch wird in Zeile 8 $ergebnis$ bedingungslos auf 1 gesetzt. D.h. der Wert der vorher beabsichtigt vom Entwickler auf 0 gesetzt wurde, wird einfach immer überschrieben. Das führt dazu, dass die vom Entwickler eingebaute Sonderbehandlung der negativen Inputs einfach entfällt.
+  \item Der Input $-1$ führt mit der gefundenen $d-d$ Anomalie aus $a)$ zu einem grundlegenden Fehler. Die Fakultätsfunktion ist nämlich für negative Inputs nicht definiert. In Zeile 4 hat der Entwickler eindeutig eine solche Abfrage eingebaut und auch dann weiter behandelt in Zeile 5 und diese auf 0 gesetzt. Wie vorher schon beschrieben wird dann in Zeile 8 der Wert für $ergebnis$ immer auf 1 gesetzt was mathematisch und systematisch nicht korrekt ist, da die Schleife für negative Inputs nicht betreten wird. Das Programm ignoriert also seine eigene Logik und Fehlerbehandlung für negative Inputs komplett und gibt immer 1 aus, obwohl die Code-Intention in Zeile 5 0 erwarten würde. Somit ist das Ergebnis für den Input $-1$ mit der Anomalie 1, was falsch ist. Korrekt wäre hier 0 oder eine Exception, damit man damit richtig weiterarbeiten kann. Das hat vor allem Auswirkungen auf die Zuverlässigkeit und Korrektheit des Programms und auch für die weiterführenden Programme die diese Funktion aufrufen und dann auf einer falschen Grundlage weiterarbeiten. 
+  \end{enumerate}
 \newpage
 \section*{Code Metriken in der Praxis}
 \begin{enumerate}[label=\alph*)]
@@ -188,7 +227,7 @@
 \end{lstlisting}
         Hier sieht man schnell dass es insgesamt 2 If-Blöcke gibt. Einmal in Zeile 16 und einmal in Zeile 20. Wir Starten mit dem Startwert 1, hier weden jetzt die 2 möglichen Pfade der If-Blöcke hinzugefügt mit jeweils ++. Somit entsteht folgende Berechnung für die zyklomatische Komplexität $M$ mit Entscheidungswegen $E$:
         \begin{align*}
-          M & = E + 1 \\
+          M & = E + 1     \\
           M & = 2 + 1 = 3
         \end{align*}
         \newpage
@@ -219,13 +258,13 @@
   \end{lstlisting}
         Auch hier sieht man schnell dass es einn If-Block gibt in Zeile 10. In diesem werden dann nochmals zwei for-Schleifen (Zeile 13 und 16) eingebaut was die Komplexität erhöht. Diese muss man beide mit einrechnen also auch jeweils ++. Somit entsteht folgende Berechnung für die zyklomatische Komplexität $M$ mit Entscheidungswegen $E$:
         \begin{align*}
-          M & = E + 1 \\
+          M & = E + 1     \\
           M & = 3 + 1 = 4
         \end{align*}
-        \item Wir haben uns hier für diese Teilaufgabe für das Plugin Checkstyle in IntelliJ entschieden. Zudem haben wir für die Configuration Files Google Checks verwendet wie man im nachfolgenden Screenshot entnehmen kann. Nachdem wir das Checkstyle Plugin laufen lassen haben, sind insgesamt 116 Warnungen aufgetreten. Man kann hier leider nicht nach Metriken und Hotspots sortieren oder filtern, deshalb haben wir uns alle Meldungen angeschaut und die relevantesten für diese Teilaufgabe herausgesucht und zusammengefasst. \\ \\
-        Man kann schon mal direkt sagen dass die Code-Qualität nicht im akzeptablen Bereich liegt. Es ist sehr offensichtlich dass so viele Meldungen nicht akzeptabel sind. Es gibt massive Verletzungen der Coding-Standards von Google Checks welche wir verwendet haben. Falsche Einrückung, fehlende Dokumentation und Import-Fehler. 
+  \item Wir haben uns hier für diese Teilaufgabe für das Plugin Checkstyle in IntelliJ entschieden. Zudem haben wir für die Configuration Files Google Checks verwendet wie man im nachfolgenden Screenshot entnehmen kann. Nachdem wir das Checkstyle Plugin laufen lassen haben, sind insgesamt 116 Warnungen aufgetreten. Man kann hier leider nicht nach Metriken und Hotspots sortieren oder filtern, deshalb haben wir uns alle Meldungen angeschaut und die relevantesten für diese Teilaufgabe herausgesucht und zusammengefasst. \\ \\
+        Man kann schon mal direkt sagen dass die Code-Qualität nicht im akzeptablen Bereich liegt. Es ist sehr offensichtlich dass so viele Meldungen nicht akzeptabel sind. Es gibt massive Verletzungen der Coding-Standards von Google Checks welche wir verwendet haben. Falsche Einrückung, fehlende Dokumentation und Import-Fehler.
         \begin{center}
-        \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-116-Warnings.jpg}
+          \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-116-Warnings.jpg}
         \end{center}
         \underline{1. Hotsport: Einrückungen}\\
         \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-fire.jpg}
@@ -233,7 +272,7 @@
         \underline{2. Hotsport: Fehlende Dokumentation}\\
         \includegraphics[width=0.95\textwidth]{Tex-Graphics/Aufgabe3-b-update.jpg} \\\\\\
         Auch hier werden zahlreiche Warnungen bezüglich der Einrückungstiefe ausgegeben. Erwartet 10, 12, 14 und findet 16 oder 20 vor. Auch hier ist die Verschachtelungstiefe zu hoch. Zudem ist eine Tiefe von 20 für eine Methode sehr hoch was genau auf die Verschachtelung von if-else-Blöcken hinweist. \\
-      
+
         \underline{3. Weitere Warnungen:}\\
         1. Javadoc-Zusammenfassung fehlt $\rightarrow$ zeigt dass hier nicht gut dokumentiert wurde widerrum die Wartbarkeit und Lesbarkeit verschlechtert. (Zeile 148 ff.)\\
         2. Vor Javadoc tag '@throws' sollte eine Leerzeile stehen. (Zeile 208)\\
