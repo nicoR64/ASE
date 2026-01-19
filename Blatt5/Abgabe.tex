@@ -1,0 +1,186 @@
+% LaTeX Template für Abgaben an der Universität Stuttgart
+% Autor: Sandro Speth
+% Bei Fragen: Sandro.Speth@iste.uni-stuttgart.de
+%-----------------------------------------------------------
+% Hauptmodul des Templates: Hier können andere Dateien eingebunden werden
+% oder Inhalte direkt rein geschrieben werden.
+% Kompiliere dieses Modul um eine PDF zu erzeugen.
+
+% Dokumentenart. Ersetze 12pt, falls die Schriftgröße anzupassen ist.
+\documentclass[12pt]{scrartcl}
+% Einbinden der Pakete, des Headers und der Formatierung.
+% Mit den \include und \input Befehlen können Dateien eingebunden werden:
+% \include: Fügt einen Seitenumbruch nach dem Text ein
+% \input: Fügt KEINEN Seitenumbruch nach dem Text ein
+\input{../assets/Packages.tex}
+\input{../assets/FormatAndHeader.tex}
+\usepackage[normalem]{ulem}
+
+\setcounter{exnum}{1} % Nummer der Aufgabe
+
+\begin{document}
+
+\input{../assets/Titelseite.tex} % Titelseite einbinden
+
+% Nutze den \exercise{Aufgabenname} Befehl, um eine neue Aufgabe zu beginnen.
+% Möchtest du eine Aufgabe in der Nummerierung überspringen, schreibe vor der Aufgabe: \stepcounter{exnum}
+% Möchtest du die Nummer einer Aufgabe auf eine beliebige Zahl x setzen, schreibe vor der Aufgabe: \setcounter{exnum}{x}
+
+\exercise{Debugging, Slicing und Tarantula I}
+\begin{enumerate}[label=(\alph*)]
+  \item {
+        \begin{enumerate}[label=\roman*.]
+          \item \textbf{Hypothese:}
+                Das Fehlverhalten tritt auf, da in Zeile 6 \texttt{lastAdded} auf den Wert $i + 1$ gesetzt wird.
+
+                Das bedeutet semantisch, dass der Wert $i$ bereits aufaddiert wurde, dem ist jedoch nicht der Fall. Somit wird der Wert in \texttt{lastAdded} immer um 1 zu hoch gespeichert, was dazu führt, dass statt der Summe der Zahlen von 1 bis $n$ die Summe der Zahlen von 2 bis $n + 1$ berechnet wird.
+          \item \textbf{Vorhersagen:} {
+                  \begin{enumerate}[label=\arabic*.]
+                    \item \texttt{summe(10)} sollte laut der Hypothese den Wert 65 zurückgeben.
+                    \item \texttt{summe(100)} sollte laut der Hypothese den Wert 5150 zurückgeben.
+                  \end{enumerate}
+                }
+        \end{enumerate}
+        }
+  \item {
+        In Listing \ref{lst:slicing} ist der Backward Slicing der Methode \texttt{summe} für die Ausgabe in Zeile 11 dargestellt. Dabei wurden alle Anweisungen durchgestrichen, die keinen Einfluss auf den Wert von \texttt{sum} in Zeile 11 haben.
+        \begin{lstlisting}[language=Java, caption={Backward Slicing für Zeile 11}, label={lst:slicing}, escapechar=@]
+int summe(int n) {
+    int sum = 0;
+    int i = 1;
+    int lastAdded = 0;
+    while (i <= n) {
+        lastAdded = i + 1;
+        sum = sum + lastAdded;
+        i = i + 1;
+    }
+    @\sout{System.out.println(lastAdded);}@
+    return sum;
+}
+        \end{lstlisting}
+        }
+        Somit zeigt sich, dass nur Zeile 10 keinen Einfluss auf den Wert von \texttt{sum} hat. Alle anderen Anweisungen führen über lang oder kurz zu einer Änderung. Beispielsweise sorgt eine Änderung der Abbruchbedingung für die \texttt{while}-Schleife in Zeile 5 dafür, dass die Schleife mehr oder weniger oft durchlaufen wird, was widerum zu mehr oder weniger Additionen von \texttt{sum} mit \texttt{lastAdded} in Zeile 7 führt. Daher sind auch Zeilen, die \texttt{i} oder \texttt{lastAdded} ändern, relevant für den Wert von \texttt{sum}.
+
+  \item {
+        Um die suspiciousness-Werte mit Tarantula zu berechnen, verwenden wir die folgende Formel:
+        \begin{equation*}
+          \text{suspiciousness}(s) = \frac{\frac{\text{failed}(s)}{\text{total failed}}}{ \frac{\text{passed}(s)}{\text{total passed}} + \frac{\text{failed}(s)}{\text{total failed}}}
+        \end{equation*}
+
+        Für die Zeilen 6, 7 und 10 ergeben sich somit die in Tabelle \ref{tab:tarantula} dargestellten Werte:
+        \begin{table}[ht!]
+          \centering
+          \begin{tabular}{|c|c|c|c|c|c||c|}
+            \hline
+            \textbf{Eingabe}       & $T_1$         & $T_2$         & $T_3$         & $T_4$         & $T_5$         & \textbf{Suspiciousness} \\
+            \hline
+            Zeile 5                & \textbullet   & \textbullet   & \textbullet   & \textbullet   & \textbullet   &                         \\
+            \hline
+            Zeile 6                &               & \textbullet   & \textbullet   &               & \textbullet   & 0.75                    \\
+            \hline
+            Zeile 7                &               & \textbullet   & \textbullet   &               & \textbullet   & 0.75                    \\
+            \hline
+            Zeile 8                &               & \textbullet   & \textbullet   &               & \textbullet   &                         \\
+            \hline
+            Zeile 10               & \textbullet   & \textbullet   & \textbullet   & \textbullet   & \textbullet   & 0.5                     \\
+            \hline
+            \hline
+            \textbf{Test-Ergebnis} & \textbf{Pass} & \textbf{Fail} & \textbf{Fail} & \textbf{Pass} & \textbf{Pass} &                         \\
+            \hline
+          \end{tabular}
+          \caption{Tarantula Tabelle für die Berechnung der suspiciousness-Werte}
+          \label{tab:tarantula}
+        \end{table}
+
+        Die folgenden Rechnungen zeigen, wie man zu diesem Ergebnis kommt:
+        \begin{align*}
+          \text{suspiciousness}(6)  & = \frac{\frac{2}{2}}{\frac{1}{3} + \frac{2}{2}} = \frac{1}{\frac{1}{3} + 1} = \frac{3}{4} = 0.75 \\
+          \text{suspiciousness}(7)  & = \frac{\frac{2}{2}}{\frac{1}{3} + \frac{2}{2}} = \frac{1}{\frac{1}{3} + 1} = \frac{3}{4} = 0.75 \\
+          \text{suspiciousness}(10) & = \frac{\frac{2}{2}}{\frac{3}{3} + \frac{2}{2}} = \frac{1}{1 + 1} = \frac{1}{2} = 0.5
+        \end{align*}
+
+        Die Werte zeigen, dass die Zeilen 6 und 7 am verdächtigsten sind, was auch mit unserer Hypothese aus Teilaufgabe (a) übereinstimmt.
+        Dadurch, dass der Wert von \texttt{lastAdded}, der in Zeile 6 gesetzt wird, in Zeile 7 weiterverwendet wird, ist auch plausibel, dass beide Zeilen den gleichen (hohen) suspiciousness-Wert haben.
+        }
+\end{enumerate}
+
+\exercise{Tarantula II}
+\begin{enumerate}[label=(\alph*)]
+  \item {
+        In Tabelle \ref{tab:tarantula2} sind die suspiciousness-Werte für die Zeilen 1-17 dargestellt.
+        Die folgenden Rechnungen zeigen, wie man zu diesen Ergebnissen kommt, wobei äquivalente Zeilen zusammengefasst wurden.
+
+        \textit{Hinweis: ``suspiciousness'' wird im Folgenden mit ``sus'' abgekürzt.}
+        \begin{align*}
+          \text{sus}(1) = \text{sus}(2) & = \frac{\frac{2}{2}}{\frac{3}{3} + \frac{2}{2}} = \frac{1}{1 + 1} = 0.5                          \\
+          \text{sus}(3)                 & = \frac{\frac{1}{2}}{\frac{0}{3} + \frac{1}{2}} = \frac{0.5}{0 + 0.5} = 1                        \\
+          \text{sus}(4)                 & = \frac{\frac{1}{2}}{\frac{3}{3} + \frac{1}{2}} = \frac{0.5}{1 + 0.5} = \frac{1}{3} \approx 0.33 \\
+          \text{sus}(5)                 & = \frac{\frac{0}{2}}{\frac{1}{3} + \frac{0}{2}} = 0
+        \end{align*}
+        \begin{align*}
+          \text{sus}(6) = \text{sus}(7) = \text{sus}(8) = \text{sus}(12) = \text{sus}(13) = \text{sus}(17) & = \frac{\frac{1}{2}}{\frac{2}{3} + \frac{1}{2}} = \frac{\frac{1}{2}}{\frac{7}{6}} = \frac{3}{7} \approx 0.43 \\
+          \text{sus}(9) = \text{sus}(14)                                                                   & = \frac{\frac{0}{2}}{\frac{2}{3} + \frac{0}{2}} = 0                                                          \\
+          \text{sus}(10) = \text{sus}(11) = \text{sus}(15) = \text{sus}(16)                                & = \frac{\frac{1}{2}}{\frac{0}{3} + \frac{1}{2}} = 1
+        \end{align*}
+        \begin{table}[ht!]
+          \centering
+          \begin{tabular}{|c|c|c|c|c|c|c|}
+            \hline
+            \textbf{Nr.} & \textbf{$T_1$ (Fail)} & \textbf{$T_2$ (Pass)} & \textbf{$T_3$ (Pass)} & \textbf{$T_4$ (Fail)} & \textbf{$T_5$ (Pass)} & \textbf{Suspiciousness} \\
+            \hline
+            \hline
+            1            & \textbullet           & \textbullet           & \textbullet           & \textbullet           & \textbullet           & 0.5                     \\
+            \hline
+            2            & \textbullet           & \textbullet           & \textbullet           & \textbullet           & \textbullet           & 0.5                     \\
+            \hline
+            3            & \textbullet           &                       &                       &                       &                       & 1                       \\
+            \hline
+            4            &                       & \textbullet           & \textbullet           & \textbullet           & \textbullet           & 0.33                    \\
+            \hline
+            5            &                       & \textbullet           &                       &                       &                       & 0                       \\
+            \hline
+            6            &                       &                       & \textbullet           & \textbullet           & \textbullet           & 0.43                    \\
+            \hline
+            7            &                       &                       & \textbullet           & \textbullet           & \textbullet           & 0.43                    \\
+            \hline
+            8            &                       &                       & \textbullet           & \textbullet           & \textbullet           & 0.43                    \\
+            \hline
+            9            &                       &                       & \textbullet           &                       & \textbullet           & 0                       \\
+            \hline
+            10           &                       &                       &                       & \textbullet           &                       & 1                       \\
+            \hline
+            11           &                       &                       &                       & \textbullet           &                       & 1                       \\
+            \hline
+            12           &                       &                       & \textbullet           & \textbullet           & \textbullet           & 0.43                    \\
+            \hline
+            13           &                       &                       & \textbullet           & \textbullet           & \textbullet           & 0.43                    \\
+            \hline
+            14           &                       &                       & \textbullet           &                       & \textbullet           & 0                       \\
+            \hline
+            15           &                       &                       &                       & \textbullet           &                       & 1                       \\
+            \hline
+            16           &                       &                       &                       & \textbullet           &                       & 1                       \\
+            \hline
+            17           &                       &                       & \textbullet           & \textbullet           & \textbullet           & 0.43                    \\
+            \hline
+          \end{tabular}
+          \caption{Tarantula Tabelle für die Berechnung der suspiciousness-Werte}
+          \label{tab:tarantula2}
+        \end{table}
+        }
+  \item {
+        Die Gründe für die fehlschlagenden Testfälle liegen mit hoher Wahrscheinlichkeit in den Code-Zeilen mit den größten suspiciousness-Werten, also den Zeilen 3, 10, 11, 15 und 16.
+        }
+  \item {
+        Beispiele für Code-Zeilen mit Verdächtigkeitswert 0 sind Zeilen 5 und 9. Da dieser Wert bedeutet, das die genannten Zeilen in keinem fehlschlagenden Testfall ausgeführt wurden, ist die Schlussfolgerung von Tarantula, dass diese Zeilen nicht die Ursache für das Fehlverhalten sein können. Man kann also davon ausgehen, dass diese Zeilen korrekt sind und kann sie deshalb von der Fehlerlokalisierung ausschließen.
+        }
+  \item {
+        Tarantula basiert auf der Heuristik, dass Codezeilen, die häufig in erfolgreichen Tests (``Pass'') ausgeführt werden, eine geringere Wahrscheinlichkeit haben, fehlerhaft zu sein. Die Formel erhöht den Nenner, wenn \texttt{passed(s)} steigt, was den Suspiciousness-Wert senkt.
+
+        Wenn eine fehlerhafte Zeile ausgeführt wird, der Test aber trotzdem besteht (weil der Fehler sich bei den spezifischen Eingabedaten nicht auf das Endergebnis auswirkt), interpretiert Tarantula dies als Indiz für die Korrektheit der Zeile. Dies verfälscht das Ergebnis und senkt den Verdachtswert der eigentlich fehlerhaften Zeile irrtümlich.
+
+        Ein Beispiel hierfür wäre die folgende Situation:
+        In einer Methode soll $x + x$ berechnet werden, aber es wurde fälschlicherweise $x * x$ implementiert. Angenommen, es gibt einen Testfall mit der Eingabe $x = 2$, der das korrekte Ergebnis $4$ erwartet. Trotz des Fehlers in der Implementierung liefert die Methode $2 * 2 = 4$, was zum Bestehen des Tests führt. Tarantula würde diese fehlerhafte Zeile als weniger verdächtig einstufen, da sie in einem erfolgreichen Test ausgeführt wurde, obwohl sie tatsächlich fehlerhaft ist.
+        }
+\end{enumerate}
+\end{document}
